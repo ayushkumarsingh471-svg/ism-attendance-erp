@@ -7,58 +7,56 @@ import io
 import os
 import base64
 
-# --- 1. PAGE SETUP & PREMIUM CSS ---
+# --- 1. PAGE SETUP & GLOBAL PREMIUM CSS ---
 st.set_page_config(layout="wide", page_title="ISM Attendance ERP", page_icon="🎓")
-
-PHOTO_DIR = "student_photos"
-os.makedirs(PHOTO_DIR, exist_ok=True)
-DB_NAME = 'attendance_data.db'
 
 st.markdown("""
     <style>
-    /* Global Background and Fonts */
     .stApp { background: #f0f4f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; } 
     
-    /* Premium Split Login Layout */
-    .login-wrapper {
-        display: flex;
-        max-width: 1000px;
-        margin: 60px auto;
-        background: white;
-        border-radius: 20px;
-        overflow: hidden;
-        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        border: 1px solid #e2e8f0;
-    }
-    .info-side {
-        flex: 1.2;
+    /* Login Split Screen UI */
+    .info-box {
         background: linear-gradient(135deg, #0f172a, #005073);
         color: white;
-        padding: 50px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        padding: 50px 40px;
+        border-radius: 15px;
+        height: 100%;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         border-right: 5px solid #f59e0b;
     }
-    .form-side {
-        flex: 1;
-        padding: 50px;
-        background: white;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
+    .info-title { font-size: 38px; font-weight: 900; margin: 0 0 5px 0; letter-spacing: 1px; display: flex; align-items: center; gap: 15px;}
+    .info-sub { color: #fcd34d; font-size: 18px; font-weight: 700; margin-bottom: 25px; letter-spacing: 0.5px;}
+    .info-text { font-size: 15px; line-height: 1.6; color: #e2e8f0; margin-bottom: 35px; }
     
-    /* Box Panels */
+    .feature-card { 
+        background: rgba(255, 255, 255, 0.08); 
+        padding: 20px; 
+        border-radius: 10px; 
+        border-left: 4px solid #f59e0b; 
+    }
+    .feature-card-title { color: #fcd34d; font-size: 15px; font-weight: bold; margin-bottom: 8px;}
+    .feature-card-text { font-size: 14px; color: #f8fafc; margin: 0; line-height: 1.5;}
+    
+    .form-box {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+        height: 100%;
+    }
+    .form-title { text-align: center; color: #0f172a; font-size: 28px; font-weight: bold; margin-bottom: 20px; }
+    
+    /* Main App Panel Boxes */
     .panel-box { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #005073; margin-bottom: 20px; transition: transform 0.3s; }
     .panel-box:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
     
-    /* Mark Attendance Layout (Profile Left, Buttons Right) */
+    /* Mark Attendance Layout */
     .profile-card-left { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); text-align: center; border: 1px solid #e2e8f0; height: 100%; }
     .profile-pic-left { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 5px solid #f8fafc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: 0 auto; display: block; }
     .id-badge { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000 !important; padding: 6px 20px; border-radius: 25px; display: inline-block; font-weight: 900; font-size: 16px; margin-bottom: 5px; box-shadow: 0 4px 6px rgba(245,158,11,0.3); border: 2px solid #fff; }
     
-    /* Full Width Excel Table */
+    /* Attendance Master Table */
     .excel-table-container { overflow-x: auto; width: 100%; max-height: 700px; background-color: white; border-radius: 8px; border: 2px solid #cbd5e1; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     .excel-table { width: 100%; border-collapse: collapse; font-size: 14px; white-space: nowrap; }
     .excel-table th { background-color: #0f172a; color: white; padding: 12px; font-weight: bold; text-align: center; position: sticky; top: 0; z-index: 2; border: 1px solid #334155; }
@@ -67,7 +65,7 @@ st.markdown("""
     .row-odd { background-color: #ffffff; }
     .excel-table tr:hover td { background-color: #e2e8f0 !important; cursor: default; }
     
-    /* Sticky Columns Logics */
+    /* Sticky Columns for Scrolling Table */
     .sticky-col-1 { position: sticky; left: 0; min-width: 100px; max-width: 100px; z-index: 3; border-right: 1px solid #cbd5e1; background-color: inherit; }
     .sticky-col-2 { position: sticky; left: 100px; min-width: 60px; max-width: 60px; z-index: 3; border-right: 1px solid #cbd5e1; background-color: inherit; }
     .sticky-col-3 { position: sticky; left: 160px; min-width: 220px; max-width: 220px; z-index: 3; border-right: 3px solid #005073; background-color: inherit; text-align: left !important; padding-left: 15px !important; }
@@ -78,7 +76,7 @@ st.markdown("""
     .status-p { background-color: #10b981 !important; color: white !important; font-size: 16px; font-weight: 900; }
     .status-a { background-color: #ef4444 !important; color: white !important; font-size: 16px; font-weight: 900; }
     
-    /* Vertical Action Buttons (One Finger Space Side-By-Side Stacked) */
+    /* Vertical Action Buttons (One Finger Space) */
     .stButton>button { width: 100%; font-weight: bold; border-radius: 8px; transition: all 0.2s; }
     .stButton>button:active { transform: scale(0.95); }
     .btn-vertical-p button { background: linear-gradient(145deg, #10b981, #059669) !important; color: white !important; height: 90px; font-size: 24px !important; margin-bottom: 10px; border: none; box-shadow: 0 5px 15px rgba(16,185,129,0.3); }
@@ -88,7 +86,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. MASTER USER DATABASE (Multi-Tenant Authentication) ---
+# --- 2. MASTER USER DATABASE ---
 MASTER_DB = 'master_users.db'
 def init_master_db():
     conn = sqlite3.connect(MASTER_DB)
@@ -97,56 +95,58 @@ def init_master_db():
 
 init_master_db()
 
-# --- 3. LOGIN & REGISTRATION GATEKEEPER ---
+# --- 3. LOGIN & REGISTRATION SPLIT SCREEN ---
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.current_user = ""
 
 if not st.session_state.logged_in:
-    st.markdown('<div class="login-wrapper">', unsafe_allow_html=True)
+    # Top spacing
+    st.markdown("<br><br>", unsafe_allow_html=True)
     
-    # Left Side: Info Panel (English Only)
-    st.markdown("""
-        <div class="info-side">
-            <h1 style="font-size: 36px; margin: 0; font-weight: 900; letter-spacing: 1px;">🎓 ISM PATNA</h1>
-            <h2 style="font-size: 20px; color: #f59e0b; margin-top: 5px; font-weight: 600;">ATTENDANCE ERP SYSTEM</h2>
-            <p style="margin-top: 25px; font-size: 15px; line-height: 1.6; color: #cbd5e1;">
-                Welcome to the professional Multi-Tenant Attendance ERP Platform. 
-                This enterprise portal provides complete data isolation, analytical insights, 
-                automated reports, and secure image profile mapping for individual courses and classes.
-            </p>
-            <div style="margin-top: 30px; background: rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; font-size: 14px;">
-                <b>💡 Multi-Tenant Isolation Feature:</b><br>
-                Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.
+    col1, col2 = st.columns([1.3, 1], gap="medium")
+    
+    with col1:
+        st.markdown("""
+        <div class="info-box">
+            <div class="info-title">🎓 ISM PATNA</div>
+            <div class="info-sub">ATTENDANCE ERP SYSTEM</div>
+            <div class="info-text">
+                Welcome to the professional Multi-Tenant Attendance ERP Platform. This enterprise portal provides complete data isolation, analytical insights, automated reports, and secure image profile mapping for individual courses and classes.
+            </div>
+            <div class="feature-card">
+                <div class="feature-card-title">💡 Multi-Tenant Isolation Feature:</div>
+                <div class="feature-card-text">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</div>
             </div>
         </div>
-    """, unsafe_allow_html=True)
-    
-    # Right Side: Form Panel
-    st.markdown('<div class="form-side">', unsafe_allow_html=True)
-    st.markdown("<h3 style='margin:0 0 15px 0; text-align:center; color:#0f172a;'>🔐 Access Portal</h3>", unsafe_allow_html=True)
-    
-    tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 REGISTER NEW CLASS"])
-    
-    with tab1:
-        l_user = st.text_input("User ID", key="login_uid_field")
-        l_pass = st.text_input("Password", type="password", key="login_pwd_field")
-        if st.button("SECURE LOGIN", type="primary", use_container_width=True):
-            conn = sqlite3.connect(MASTER_DB)
-            res = conn.execute("SELECT * FROM users WHERE username=? AND password=?", (l_user.strip(), l_pass)).fetchone()
-            conn.close()
-            if res:
-                st.session_state.logged_in = True
-                st.session_state.current_user = l_user.strip()
-                st.rerun()
-            else:
-                st.error("❌ Invalid User ID or Password!")
-                
-    with tab2:
-        with st.form("register_form"):
-            n_user = st.text_input("Choose User ID (e.g., BCA_Sem1)")
-            n_pass = st.text_input("Create Password", type="password")
-            if st.form_submit_button("REGISTER ACCOUNT", use_container_width=True):
+        """, unsafe_allow_html=True)
+        
+    with col2:
+        st.markdown('<div class="form-box">', unsafe_allow_html=True)
+        st.markdown('<div class="form-title">🔐 Access Portal</div>', unsafe_allow_html=True)
+        
+        tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 REGISTER NEW CLASS"])
+        
+        with tab1:
+            l_user = st.text_input("User ID", placeholder="Enter User ID", key="login_uid_field")
+            l_pass = st.text_input("Password", type="password", placeholder="Enter Password", key="login_pwd_field")
+            st.write("")
+            if st.button("SECURE LOGIN", type="primary", use_container_width=True):
+                conn = sqlite3.connect(MASTER_DB)
+                res = conn.execute("SELECT * FROM users WHERE username=? AND password=?", (l_user.strip(), l_pass)).fetchone()
+                conn.close()
+                if res:
+                    st.session_state.logged_in = True
+                    st.session_state.current_user = l_user.strip()
+                    st.rerun()
+                else:
+                    st.error("❌ Invalid User ID or Password!")
+                    
+        with tab2:
+            n_user = st.text_input("User ID", placeholder="Choose User ID (e.g., BCA_Sem1)")
+            n_pass = st.text_input("Password", type="password", placeholder="Create Password")
+            st.write("")
+            if st.button("REGISTER ACCOUNT", type="primary", use_container_width=True):
                 if n_user and n_pass:
                     conn = sqlite3.connect(MASTER_DB)
                     try:
@@ -159,7 +159,8 @@ if not st.session_state.logged_in:
                 else:
                     st.error("Both fields are required.")
                     
-    st.markdown("</div></div>", unsafe_allow_html=True)
+        st.markdown("</div>", unsafe_allow_html=True)
+        
     st.stop()
 
 # =========================================================================
@@ -300,7 +301,7 @@ if menu == "📊 Dashboard":
     c4.markdown(f'<div class="panel-box" style="text-align:center; background:#28a745; color:white;"><h4>Present on {target_date.strftime("%d %b")}</h4><h2>{present_today}</h2></div>', unsafe_allow_html=True)
 
 # =========================================================================
-# TAB 2: MARK ATTENDANCE (PROFILE LEFT, BUTTONS RIGHT VERTICAL)
+# TAB 2: MARK ATTENDANCE
 # =========================================================================
 elif menu == "📝 Mark Attendance":
     st.markdown("### 📝 Active Mark Attendance Panel")
@@ -333,7 +334,7 @@ elif menu == "📝 Mark Attendance":
             <div class='profile-card-left'>
                 <img src='{photo_url}' class='profile-pic-left'>
                 <h1 style='margin: 15px 0 5px 0; color:#0f172a; font-size:28px;'>{s_name}</h1>
-                <div class='id-badge'>🆔 REG: {s_reg}</div>
+                <div class='id-badge'>🆔 REG NO: {s_reg}</div>
                 <h4 style='margin: 5px 0 0 0; color:#64748b; font-size: 16px;'>ROLL NO: {s_roll}</h4>
             </div>
             """
@@ -347,7 +348,7 @@ elif menu == "📝 Mark Attendance":
                 st.rerun()
                 
             n1, n2 = st.columns(2)
-            if n1.button("◀ PREV STUDENT"):
+            if n1.button("◀ PREVIOUS STUDENT"):
                 if st.session_state.current_idx > 0: st.session_state.current_idx -= 1; st.rerun()
             if n2.button("NEXT STUDENT ▶"):
                 if st.session_state.current_idx < len(student_list) - 1: st.session_state.current_idx += 1; st.rerun()
@@ -449,7 +450,7 @@ elif menu == "📅 Attendance Table":
     conn.close()
 
 # =========================================================================
-# TAB 4: MANAGE STUDENTS (WITH REMOVE ATTENDANCE)
+# TAB 4: MANAGE STUDENTS
 # =========================================================================
 elif menu == "👥 Manage Students":
     st.markdown("### 👥 Student Database Management Panel")
@@ -533,7 +534,7 @@ elif menu == "👥 Manage Students":
     clr_reg = r_a1.text_input("Enter Target Student Reg No")
     clr_sub = r_a2.selectbox("Select Subject Horizon", ["All Subjects"] + get_subjects())
     
-    if st.button("🚨 REMOVE ATTENDANCE HISTOGRAM", type="primary"):
+    if st.button("🚨 REMOVE ATTENDANCE LOGS", type="primary"):
         if clr_reg:
             conn = sqlite3.connect(DB_NAME)
             cursor = conn.cursor()
@@ -547,9 +548,9 @@ elif menu == "👥 Manage Students":
                     cursor.execute("DELETE FROM attendance WHERE student_id=? AND subject_id=(SELECT id FROM subjects WHERE subject_name=?)", (s_id, clr_sub))
                 rows_deleted = cursor.rowcount
                 conn.commit()
-                st.success(f"🧹 Purged {rows_deleted} attendance node intersections cleanly for Reg No: {clr_reg}.")
+                st.success(f"🧹 Purged {rows_deleted} attendance logs cleanly for Reg No: {clr_reg}.")
             else:
-                st.error("No verified student entity matches the provided Registration Number.")
+                st.error("No verified student matches the provided Registration Number.")
             conn.close()
         else: st.error("Valid target student Registration Number required.")
     st.markdown("</div>", unsafe_allow_html=True)
@@ -575,7 +576,7 @@ elif menu == "🏢 College Profile":
                 set_setting('app_subtitle', new_c_sub)
                 set_setting('course_name', new_course)
                 set_setting('section_name', new_sec)
-                st.success("✅ System header identity matrix synced successfully!")
+                st.success("✅ System header identity synced successfully!")
                 st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -583,56 +584,56 @@ elif menu == "🏢 College Profile":
         st.markdown("<div class='panel-box'>", unsafe_allow_html=True)
         st.markdown("<h3 style='color:#dc3545;'>🔐 2. Security & Credentials Access</h3>", unsafe_allow_html=True)
         with st.form("login_creds_form"):
-            st.write(f"Modify encryption token key for Session Entity: **{USER_ID}**")
+            st.write(f"Modify password for User ID: **{USER_ID}**")
             new_admin_pass = st.text_input("Input New Security Password", type="password")
             
-            if st.form_submit_button("COMMIT CREDENTIAL ALTERATION"):
+            if st.form_submit_button("UPDATE ACCOUNT PASSWORD"):
                 if new_admin_pass:
                     conn = sqlite3.connect(MASTER_DB)
                     conn.execute("UPDATE users SET password=? WHERE username=?", (new_admin_pass, USER_ID))
                     conn.commit(); conn.close()
-                    st.success("✅ Credentials encrypted and mapped safely to Master Node.")
+                    st.success("✅ Credentials encrypted and mapped safely.")
                 else:
-                    st.error("Encryption parameter space cannot remain uninstantiated.")
+                    st.error("Password field cannot be empty.")
         st.markdown("</div>", unsafe_allow_html=True)
         
     c3, c4 = st.columns(2)
     with c3:
         st.markdown("<div class='panel-box'>", unsafe_allow_html=True)
-        st.markdown("<h3 style='color:#10b981;'>📚 3. Add Custom Curricular Subject</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color:#10b981;'>📚 3. Add Custom Subject</h3>", unsafe_allow_html=True)
         with st.form("add_sub_form"):
             n_sub = st.text_input("Instantiate New Subject Label")
-            if st.form_submit_button("COMPILE SUBJECT ENTRY"):
+            if st.form_submit_button("ADD SUBJECT TO CURRICULUM"):
                 if n_sub:
                     conn = sqlite3.connect(DB_NAME)
                     conn.execute("INSERT OR IGNORE INTO subjects (subject_name) VALUES (?)", (n_sub.strip(),))
                     conn.commit(); conn.close()
-                    st.success(f"✅ Curricular stream '{n_sub}' aggregated successfully.")
+                    st.success(f"✅ Subject '{n_sub}' added successfully.")
                     st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
         
     with c4:
         st.markdown("<div class='panel-box'>", unsafe_allow_html=True)
-        st.markdown("<h3 style='color:#f59e0b;'>🖼️ 4. College Logo Brand Image Upload</h3>", unsafe_allow_html=True)
+        st.markdown("<h3 style='color:#f59e0b;'>🖼️ 4. College Logo Brand Upload</h3>", unsafe_allow_html=True)
         logo_file_new = st.file_uploader("Select institutional brand mark (PNG/JPG)", type=["png", "jpg", "jpeg"])
-        if st.button("EXECUTE GRAPHIC MAP PIPELINE", type="primary"):
+        if st.button("UPDATE BRAND GRAPHIC", type="primary"):
             if logo_file_new:
                 with open(LOGO_FILE, "wb") as f: f.write(logo_file_new.getbuffer())
                 st.success("✅ Brand graphic updated across session vectors.")
                 st.rerun()
             else:
-                st.error("No certified binary graphic context selected.")
+                st.error("No valid image file selected.")
         st.markdown("</div>", unsafe_allow_html=True)
         
     st.markdown("<div class='panel-box'>", unsafe_allow_html=True)
-    st.markdown("<h3 style='color:#ef4444;'>🗑️ 5. De-instantiate Subject Entry</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color:#ef4444;'>🗑️ 5. Remove Subject</h3>", unsafe_allow_html=True)
     with st.form("del_sub_form"):
-        d_sub = st.selectbox("Select Target Stream Key to De-allocate", get_subjects())
-        if st.form_submit_button("PURGE CURRICULAR STREAM NODE"):
+        d_sub = st.selectbox("Select Subject to Delete", get_subjects())
+        if st.form_submit_button("DELETE SUBJECT PERMANENTLY"):
             if d_sub:
                 conn = sqlite3.connect(DB_NAME)
                 conn.execute("DELETE FROM subjects WHERE subject_name=?", (d_sub,))
                 conn.commit(); conn.close()
-                st.success(f"✅ Stream node context for '{d_sub}' removed safely.")
+                st.success(f"✅ Subject '{d_sub}' removed safely.")
                 st.rerun()
     st.markdown("</div>", unsafe_allow_html=True)
