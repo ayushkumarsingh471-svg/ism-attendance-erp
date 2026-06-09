@@ -7,8 +7,30 @@ import io
 import os
 import base64
 
-# --- 1. PAGE SETUP & GLOBAL CSS ---
+# --- 1. PAGE SETUP & SAFE CSS ---
 st.set_page_config(layout="wide", page_title="ISM Attendance ERP", page_icon="🎓")
+
+st.markdown("""
+    <style>
+    /* Safe global tweaks */
+    .stApp { background-color: #f8fafc; }
+    header { visibility: hidden; }
+    
+    /* Clean Tab Styling */
+    .stTabs [data-baseweb="tab-list"] { justify-content: center; }
+    .stTabs [data-baseweb="tab"] { font-weight: bold; }
+    
+    /* Attendance Table Styling */
+    .excel-table-container { overflow-x: auto; max-height: 600px; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .excel-table { width: 100%; border-collapse: collapse; background: white; font-size: 14px; }
+    .excel-table th { background: #0f172a; color: white; padding: 12px; position: sticky; top: 0; z-index: 2; text-align: center; }
+    .excel-table td { padding: 10px; border: 1px solid #e2e8f0; text-align: center; }
+    .row-even { background-color: #f8fafc; }
+    .row-odd { background-color: #ffffff; }
+    .status-p { background: #10b981; color: white; font-weight: bold; }
+    .status-a { background: #ef4444; color: white; font-weight: bold; }
+    </style>
+""", unsafe_allow_html=True)
 
 # --- 2. MASTER USER DATABASE ---
 MASTER_DB = 'master_users.db'
@@ -19,122 +41,73 @@ def init_master_db():
 
 init_master_db()
 
-# --- 3. LOGIN & REGISTRATION SUPER PREMIUM UI ---
+# =========================================================================
+# 3. SAFE LOGIN & REGISTRATION SCREEN
+# =========================================================================
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.current_user = ""
 
 if not st.session_state.logged_in:
-    # STRICT CSS TO FORCE PERFECT LAYOUT FOR LOGIN SCREEN
-    st.markdown("""
-        <style>
-        .stApp { background: #e2e8f0; }
-        header {visibility: hidden;}
-        #MainMenu {visibility: hidden;}
-        .block-container {padding-top: 2rem !important; max-width: 1000px !important;}
-        
-        [data-testid="stHorizontalBlock"] {
-            background-color: transparent !important;
-            border-radius: 20px !important;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important;
-            margin-top: 30px !important;
-            display: flex;
-            align-items: stretch;
-        }
-        [data-testid="stHorizontalBlock"] > div { gap: 0 !important; }
-        
-        /* LEFT SIDE */
-        [data-testid="column"]:nth-child(1) {
-            background: linear-gradient(135deg, #0f172a, #005073) !important;
-            padding: 50px 40px !important;
-            border-radius: 20px 0 0 20px !important;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-right: 4px solid #f59e0b;
-        }
-        
-        /* RIGHT SIDE */
-        [data-testid="column"]:nth-child(2) {
-            background: #ffffff !important;
-            padding: 50px 40px !important;
-            border-radius: 0 20px 20px 0 !important;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        .stMarkdown:empty { display: none !important; }
-        [data-testid="column"]:nth-child(2) > div > div > div:first-child:empty { display: none !important; }
-        
-        .stTextInput input { border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 12px; background: #f8fafc;}
-        .stTextInput input:focus { border-color: #ef4444; }
-        .stTextInput p { font-weight: bold; color: #334155; }
-        
-        .stButton>button { width: 100%; background: linear-gradient(135deg, #f43f5e 0%, #fb923c 100%) !important; color: white !important; font-weight: 900 !important; font-size: 18px !important; border-radius: 10px !important; height: 50px !important; border: none !important; box-shadow: 0 8px 15px rgba(244, 63, 94, 0.25) !important; transition: all 0.3s ease !important; margin-top: 10px;}
-        .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(244, 63, 94, 0.4) !important; }
-        
-        .stTabs [data-baseweb="tab-list"] { justify-content: center; background: transparent; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px;}
-        .stTabs [data-baseweb="tab"] { font-weight: bold; font-size: 15px; color: #64748b;}
-        .stTabs [aria-selected="true"] { color: #f43f5e !important; border-bottom-color: #f43f5e !important;}
-        </style>
-    """, unsafe_allow_html=True)
-    
-    col1, col2 = st.columns([1.2, 1])
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    col1, col2 = st.columns([1.2, 1], gap="large")
     
     with col1:
+        # Safe HTML for left banner
         st.markdown("""
-        <div>
-            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 5px;">
-                <span style="font-size: 45px;">🎓</span>
-                <h1 style="font-size: 42px; font-weight: 900; margin: 0; color: #ffffff; letter-spacing: 1px;">ISM PATNA</h1>
-            </div>
-            <h3 style="color: #fcd34d; font-weight: 800; margin-top: 0px; font-size: 18px; letter-spacing: 1px;">ATTENDANCE ERP SYSTEM</h3>
-            <p style="font-size: 15px; line-height: 1.8; color: #cbd5e1; margin-top: 25px;">
+        <div style="background: linear-gradient(135deg, #0f172a, #005073); padding: 50px 40px; border-radius: 15px; color: white; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border-right: 5px solid #f59e0b; height: 100%;">
+            <h1 style="font-size: 42px; font-weight: 900; margin: 0;">🎓 ISM PATNA</h1>
+            <h3 style="color: #fcd34d; font-weight: 700; margin-top: 5px;">ATTENDANCE ERP SYSTEM</h3>
+            <p style="margin-top: 25px; line-height: 1.7; font-size: 15px; color: #cbd5e1;">
                 Welcome to the professional Multi-Tenant Attendance ERP Platform. This enterprise portal provides complete data isolation, analytical insights, automated reports, and secure image profile mapping for individual courses and classes.
             </p>
-            <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; border-left: 4px solid #f59e0b; margin-top: 30px;">
-                <b style="color: #fcd34d; font-size: 16px;">💡 Multi-Tenant Isolation Feature:</b><br>
-                <span style="font-size: 14px; color: #f8fafc; display: inline-block; margin-top: 8px; line-height: 1.6;">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</span>
+            <div style="background: rgba(255,255,255,0.08); padding: 20px; border-radius: 8px; border-left: 4px solid #f59e0b; margin-top: 35px;">
+                <b style="color: #fcd34d; font-size: 15px;">💡 Multi-Tenant Isolation Feature:</b><br>
+                <span style="font-size: 14px; color: #f8fafc; display: inline-block; margin-top: 8px;">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
     with col2:
-        st.markdown("<h2 style='text-align:center; background: -webkit-linear-gradient(45deg, #f43f5e, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; margin-top: 0; margin-bottom: 5px;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align:center; color: #0f172a; font-weight: 900;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
         
         tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 REGISTER NEW CLASS"])
         
         with tab1:
-            l_user = st.text_input("User ID", placeholder="Enter User ID", key="login_uid_field")
-            l_pass = st.text_input("Password", type="password", placeholder="Enter Password", key="login_pwd_field")
-            if st.button("SECURE LOGIN", type="primary"):
-                conn = sqlite3.connect(MASTER_DB)
-                res = conn.execute("SELECT * FROM users WHERE username=? AND password=?", (l_user.strip(), l_pass)).fetchone()
-                conn.close()
-                if res:
-                    st.session_state.logged_in = True
-                    st.session_state.current_user = l_user.strip()
-                    st.rerun()
-                else:
-                    st.error("❌ Invalid User ID or Password!")
+            with st.form("login_form"):
+                l_user = st.text_input("User ID", placeholder="Enter User ID")
+                l_pass = st.text_input("Password", type="password", placeholder="Enter Password")
+                submitted = st.form_submit_button("SECURE LOGIN", type="primary", use_container_width=True)
+                
+                if submitted:
+                    conn = sqlite3.connect(MASTER_DB)
+                    res = conn.execute("SELECT * FROM users WHERE username=? AND password=?", (l_user.strip(), l_pass)).fetchone()
+                    conn.close()
+                    if res:
+                        st.session_state.logged_in = True
+                        st.session_state.current_user = l_user.strip()
+                        st.rerun()
+                    else:
+                        st.error("❌ Invalid User ID or Password!")
                     
         with tab2:
-            n_user = st.text_input("User ID", placeholder="Choose User ID (e.g., BCA_Sem1)")
-            n_pass = st.text_input("Password", type="password", placeholder="Create Password")
-            if st.button("REGISTER ACCOUNT", type="primary"):
-                if n_user and n_pass:
-                    conn = sqlite3.connect(MASTER_DB)
-                    try:
-                        conn.execute("INSERT INTO users (username, password) VALUES (?, ?)", (n_user.strip(), n_pass))
-                        conn.commit()
-                        st.success(f"✅ Registered '{n_user}' successfully! Switch to Login tab.")
-                    except sqlite3.IntegrityError:
-                        st.error("⚠️ This User ID already exists. Try another name.")
-                    conn.close()
-                else:
-                    st.error("Both fields are required.")
-                    
+            with st.form("register_form"):
+                n_user = st.text_input("User ID", placeholder="Choose User ID (e.g., BCA_Sem1)")
+                n_pass = st.text_input("Password", type="password", placeholder="Create Password")
+                reg_submitted = st.form_submit_button("REGISTER ACCOUNT", type="primary", use_container_width=True)
+                
+                if reg_submitted:
+                    if n_user and n_pass:
+                        conn = sqlite3.connect(MASTER_DB)
+                        try:
+                            conn.execute("INSERT INTO users (username, password) VALUES (?, ?)", (n_user.strip(), n_pass))
+                            conn.commit()
+                            st.success(f"✅ Registered '{n_user}' successfully! Please switch to the Login tab.")
+                        except sqlite3.IntegrityError:
+                            st.error("⚠️ This User ID already exists. Try another name.")
+                        conn.close()
+                    else:
+                        st.error("Both fields are required.")
     st.stop()
 
 # =========================================================================
@@ -145,68 +118,6 @@ DB_NAME = f"database_{USER_ID}.db"
 PHOTO_DIR = f"photos_{USER_ID}"
 LOGO_FILE = f"logo_{USER_ID}.png"
 os.makedirs(PHOTO_DIR, exist_ok=True)
-
-# FULL PAGE CSS - PREMIUM ACTIVE LOOK AFTER LOGIN
-st.markdown("""
-    <style>
-    /* Gorgeous Light Background for Full Page */
-    .stApp { background: linear-gradient(135deg, #eef2f6 0%, #dbeafe 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; } 
-    
-    div[data-testid="stSidebar"] { background-color: #1e293b; color: white !important; border-right: 2px solid #005073; }
-    div[data-testid="stSidebar"] * { color: white !important; }
-    
-    .panel-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); border-top: 4px solid #005073; margin-bottom: 20px; transition: transform 0.3s; }
-    .panel-box:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
-    
-    /* Make all generic buttons look premium and chunky */
-    div[data-testid="stButton"] button {
-        border-radius: 12px;
-        padding: 10px 20px;
-        font-weight: 800;
-        font-size: 16px;
-        border: 2px solid #cbd5e1;
-        transition: all 0.3s ease;
-        background: white;
-        color: #0f172a;
-    }
-    div[data-testid="stButton"] button:hover {
-        border-color: #005073;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-        color: #005073;
-    }
-    
-    /* Specific coloring for primary buttons (like logout) */
-    div[data-testid="stButton"] button[kind="primary"] {
-        background: linear-gradient(135deg, #ef4444, #dc2626) !important;
-        color: white !important;
-        border: none;
-    }
-    div[data-testid="stButton"] button[kind="primary"]:hover {
-        background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
-        box-shadow: 0 8px 15px rgba(239, 68, 68, 0.3);
-    }
-    
-    /* Attendance Master Table */
-    .excel-table-container { overflow-x: auto; width: 100%; max-height: 700px; background-color: white; border-radius: 8px; border: 2px solid #cbd5e1; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .excel-table { width: 100%; border-collapse: collapse; font-size: 14px; white-space: nowrap; }
-    .excel-table th { background-color: #0f172a; color: white; padding: 12px; font-weight: bold; text-align: center; position: sticky; top: 0; z-index: 2; border: 1px solid #334155; }
-    .excel-table td { padding: 10px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; }
-    .row-even { background-color: #f8fafc; }
-    .row-odd { background-color: #ffffff; }
-    .excel-table tr:hover td { background-color: #e2e8f0 !important; cursor: default; }
-    
-    .sticky-col-1 { position: sticky; left: 0; min-width: 100px; max-width: 100px; z-index: 3; border-right: 1px solid #cbd5e1; background-color: inherit; }
-    .sticky-col-2 { position: sticky; left: 100px; min-width: 60px; max-width: 60px; z-index: 3; border-right: 1px solid #cbd5e1; background-color: inherit; }
-    .sticky-col-3 { position: sticky; left: 160px; min-width: 220px; max-width: 220px; z-index: 3; border-right: 3px solid #005073; background-color: inherit; text-align: left !important; padding-left: 15px !important; }
-    th.sticky-col-1 { left: 0; min-width: 100px; z-index: 4 !important; background-color: #0f172a; border-right: 1px solid #334155; }
-    th.sticky-col-2 { left: 100px; min-width: 60px; z-index: 4 !important; background-color: #0f172a; border-right: 1px solid #334155; }
-    th.sticky-col-3 { left: 160px; min-width: 220px; z-index: 4 !important; background-color: #0f172a; border-right: 3px solid #f59e0b; }
-    
-    .status-p { background-color: #10b981 !important; color: white !important; font-size: 16px; font-weight: 900; }
-    .status-a { background-color: #ef4444 !important; color: white !important; font-size: 16px; font-weight: 900; }
-    </style>
-""", unsafe_allow_html=True)
 
 def init_user_db():
     conn = sqlite3.connect(DB_NAME)
@@ -254,22 +165,11 @@ def get_student_photo_url(reg_no):
             return f"data:image/{ext};base64,{get_image_base64(path)}"
     return "https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
 
-def generate_excel_report():
-    conn = sqlite3.connect(DB_NAME)
-    df_details = pd.read_sql("SELECT s.reg_no AS 'Reg No', s.roll_no AS 'Roll No', s.name AS 'Student Name', sub.subject_name AS 'Subject', a.date AS 'Date', a.status AS 'Status' FROM attendance a JOIN students s ON a.student_id = s.id JOIN subjects sub ON a.subject_id = sub.id ORDER BY a.date DESC", conn)
-    df_students = pd.read_sql("SELECT reg_no AS 'Reg No', roll_no AS 'Roll No', name AS 'Name' FROM students ORDER BY CAST(roll_no AS INTEGER) ASC", conn)
-    conn.close()
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine='openpyxl') as writer:
-        df_details.to_excel(writer, sheet_name='Detailed_Logs', index=False)
-        df_students.to_excel(writer, sheet_name='All_Students', index=False)
-    return output.getvalue()
-
 # --- HEADER SECTION ---
 logo_html = ""
 if os.path.exists(LOGO_FILE):
     logo_base64 = get_image_base64(LOGO_FILE)
-    logo_html = f"<img src='data:image/png;base64,{logo_base64}' style='max-width:90px; max-height:90px; object-fit:contain; margin-right:20px; border-radius:8px;'>"
+    logo_html = f"<img src='data:image/png;base64,{logo_base64}' style='max-width:100px; max-height:100px; object-fit:contain; margin-right:20px; border-radius:8px;'>"
 
 c_name = get_setting('college_name', 'INTERNATIONAL SCHOOL OF MANAGEMENT (ISM)')
 c_sub = get_setting('app_subtitle', 'ATTENDANCE MANAGEMENT SYSTEM')
@@ -277,17 +177,17 @@ c_course = get_setting('course_name', 'BCA')
 c_sec = get_setting('section_name', 'Semester 1')
 
 st.markdown(f"""
-    <div style="display:flex; align-items:center; background: linear-gradient(135deg, #0f172a, #005073); padding: 20px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-bottom: 4px solid #f59e0b; margin-bottom: 25px;">
+    <div style="display:flex; align-items:center; background: #0f172a; padding: 20px 30px; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border-bottom: 5px solid #f59e0b; margin-bottom: 25px;">
         {logo_html}
         <div>
-            <h1 style="margin: 0; font-size: 28px; font-weight: 900; color: white;">{c_name}</h1>
-            <h3 style="margin: 5px 0 0 0; font-size: 16px; color: #fcd34d; font-weight: 600;">{c_sub} | {c_course} | {c_sec}</h3>
+            <h1 style="margin: 0; font-size: 30px; font-weight: 900; color: white;">{c_name}</h1>
+            <h3 style="margin: 5px 0 0 0; font-size: 16px; color: #fcd34d;">{c_sub} &nbsp;|&nbsp; {c_course} &nbsp;|&nbsp; {c_sec}</h3>
         </div>
     </div>
 """, unsafe_allow_html=True)
 
 # --- SIDEBAR NAV ---
-st.sidebar.markdown(f"<h3 style='text-align:center; color:#fcd34d;'>👤 User: {USER_ID}</h3>", unsafe_allow_html=True)
+st.sidebar.markdown(f"<h3 style='text-align:center; color:#0f172a;'>👤 User: {USER_ID}</h3>", unsafe_allow_html=True)
 st.sidebar.markdown("---")
 
 menu = st.sidebar.radio("Navigate Pages:", [
@@ -299,7 +199,7 @@ menu = st.sidebar.radio("Navigate Pages:", [
 ])
 
 st.sidebar.markdown("---")
-if st.sidebar.button("🚪 LOGOUT", type="primary", use_container_width=True):
+if st.sidebar.button("🚪 LOGOUT", type="primary"):
     st.session_state.logged_in = False
     st.session_state.current_user = ""
     st.rerun()
@@ -328,47 +228,22 @@ if menu == "📊 Dashboard":
     present_today = conn.execute("SELECT COUNT(date) FROM attendance WHERE subject_id=(SELECT id FROM subjects WHERE subject_name=?) AND date=? AND status='Present'", (sel_sub, str(target_date))).fetchone()[0] or 0
     conn.close()
     
-    st.write("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     c1, c2, c3, c4 = st.columns(4)
-    c1.markdown(f'<div class="metric-box" style="border-top-color:#3b82f6;"><h4>Total Students</h4><h2>{total_students}</h2></div>', unsafe_allow_html=True)
-    c2.markdown(f'<div class="metric-box" style="border-top-color:#8b5cf6;"><h4>Classes Conducted</h4><h2>{tc_count}</h2></div>', unsafe_allow_html=True)
-    c3.markdown(f'<div class="metric-box" style="border-top-color:#10b981;"><h4>Selected Subject</h4><h2 style="font-size:24px; margin-top:15px;">{sel_sub}</h2></div>', unsafe_allow_html=True)
-    c4.markdown(f'<div class="metric-box" style="border-top-color:#f59e0b;"><h4>Present on {target_date.strftime("%d %b")}</h4><h2>{present_today}</h2></div>', unsafe_allow_html=True)
+    
+    def metric_card(title, value, color):
+        return f"<div style='background: white; border-radius: 12px; padding: 20px; text-align: center; border-top: 4px solid {color}; box-shadow: 0 4px 6px rgba(0,0,0,0.05);'><h4 style='margin:0; color:#64748b; font-size:16px;'>{title}</h4><h2 style='margin:10px 0 0 0; color:#0f172a; font-size:32px;'>{value}</h2></div>"
+        
+    c1.markdown(metric_card("Total Students", total_students, "#3b82f6"), unsafe_allow_html=True)
+    c2.markdown(metric_card("Classes Conducted", tc_count, "#8b5cf6"), unsafe_allow_html=True)
+    c3.markdown(metric_card("Selected Subject", sel_sub, "#10b981"), unsafe_allow_html=True)
+    c4.markdown(metric_card(f"Present on {target_date.strftime('%d %b')}", present_today, "#f59e0b"), unsafe_allow_html=True)
 
 # =========================================================================
-# TAB 2: MARK ATTENDANCE (PROFESSIONAL ID CARD & GREEN/RED BUTTONS)
+# TAB 2: MARK ATTENDANCE (PROFESSIONAL ID CARD)
 # =========================================================================
 elif menu == "📝 Mark Attendance":
     st.markdown("### 📝 Active Mark Attendance Panel")
-    
-    # CSS HACK ONLY FOR THIS TAB TO MAKE BUTTONS GREEN AND RED
-    st.markdown("""
-    <style>
-    /* MAKE 1ST BUTTON GREEN (PRESENT) */
-    [data-testid="column"]:nth-of-type(3) div[data-testid="element-container"]:nth-of-type(2) button {
-        background: linear-gradient(135deg, #10b981, #059669) !important;
-        color: white !important;
-        border: none !important;
-        box-shadow: 0 8px 15px rgba(16,185,129,0.3) !important;
-    }
-    [data-testid="column"]:nth-of-type(3) div[data-testid="element-container"]:nth-of-type(2) button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 20px rgba(16,185,129,0.5) !important;
-    }
-    
-    /* MAKE 2ND BUTTON RED (ABSENT) */
-    [data-testid="column"]:nth-of-type(3) div[data-testid="element-container"]:nth-of-type(4) button {
-        background: linear-gradient(135deg, #ef4444, #dc2626) !important;
-        color: white !important;
-        border: none !important;
-        box-shadow: 0 8px 15px rgba(239,68,68,0.3) !important;
-    }
-    [data-testid="column"]:nth-of-type(3) div[data-testid="element-container"]:nth-of-type(4) button:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 20px rgba(239,68,68,0.5) !important;
-    }
-    </style>
-    """, unsafe_allow_html=True)
     
     col_a, col_b, col_c, col_d = st.columns(4)
     now = datetime.now()
@@ -388,40 +263,33 @@ elif menu == "📝 Mark Attendance":
         s_id, s_reg, s_roll, s_name = curr_student
         photo_url = get_student_photo_url(s_reg)
         
-        st.write("<hr style='margin: 10px 0;'>", unsafe_allow_html=True)
+        st.markdown("<hr>", unsafe_allow_html=True)
         col_prof, col_space, col_btn = st.columns([2.5, 0.2, 1.5])
         
         with col_prof:
-            # PROFESSIONAL STUDENT ID CARD UI
+            # PURE HTML PROFESSIONAL ID CARD (100% SAFE)
             profile_html = f"""
-            <div style='background: #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid #cbd5e1; text-align: center; max-width: 380px; margin: 0 auto; position: relative;'>
-                
-                <div style='background: linear-gradient(135deg, #0f172a, #005073); padding: 20px; color: #fcd34d; font-weight: 900; font-size: 18px; letter-spacing: 2px;'>
-                    <div style='width: 50px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 15px auto;'></div>
+            <div style='background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: 1px solid #cbd5e1; text-align: center; max-width: 350px; margin: 0 auto; overflow: hidden; position: relative;'>
+                <div style='background: #0f172a; padding: 15px; color: #fcd34d; font-weight: 900; font-size: 16px; letter-spacing: 1px;'>
+                    <div style='width: 40px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 10px auto;'></div>
                     STUDENT ID CARD
                 </div>
-                
-                <div style='margin-top: -45px;'>
-                    <img src='{photo_url}' style='width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 5px solid #ffffff; box-shadow: 0 5px 15px rgba(0,0,0,0.2); background: white;'>
-                </div>
-                
-                <div style='padding: 15px 20px;'>
-                    <h1 style='color: #0f172a; font-size: 24px; font-weight: 900; margin: 5px 0; text-transform: uppercase;'>{s_name}</h1>
-                    <div style='background: #f1f5f9; color: #ef4444; padding: 6px 15px; border-radius: 6px; display: inline-block; font-weight: 900; font-size: 15px; margin: 10px 0; border: 1px solid #e2e8f0;'>
+                <div style='padding: 25px 20px; background: url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23f1f5f9\' fill-opacity=\'0.4\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E");'>
+                    <img src='{photo_url}' style='width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.15); margin-bottom: 15px;'>
+                    <h2 style='color: #0f172a; font-size: 24px; font-weight: 900; margin: 0;'>{s_name}</h2>
+                    <div style='background: #f1f5f9; color: #ef4444; padding: 6px 15px; border-radius: 6px; font-weight: bold; margin: 10px 0; border: 1px solid #e2e8f0; display: inline-block;'>
                         REG NO: {s_reg}
                     </div>
-                    <h4 style='color: #64748b; font-size: 15px; font-weight: 700; margin: 5px 0 10px 0;'>ROLL NO: {s_roll}</h4>
+                    <h4 style='color: #64748b; margin: 0; font-size: 15px;'>ROLL NO: {s_roll}</h4>
                 </div>
-                
-                <div style='background: #f8fafc; padding: 12px; color: #475569; font-weight: 700; font-size: 12px; border-top: 1px solid #e2e8f0;'>
+                <div style='background: #f8fafc; padding: 12px; color: #475569; font-weight: bold; font-size: 12px; border-top: 1px solid #e2e8f0;'>
                     {c_name}
                 </div>
-                
             </div>
             """
             st.markdown(profile_html, unsafe_allow_html=True)
             
-            st.write("<br>", unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
             student_options = [f"{s[1]} - {s[3]}" for s in student_list]
             selected_student = st.selectbox("🔍 Quick Jump to Student", student_options, index=st.session_state.current_idx)
             if student_options.index(selected_student) != st.session_state.current_idx:
@@ -435,20 +303,20 @@ elif menu == "📝 Mark Attendance":
                 if st.session_state.current_idx < len(student_list) - 1: st.session_state.current_idx += 1; st.rerun()
 
         with col_btn:
-            st.write("<br><br>", unsafe_allow_html=True)
+            st.markdown("<br><br><br>", unsafe_allow_html=True)
             
-            # This is element 2 (Will be GREEN from CSS)
-            if st.button("✅ MARK PRESENT", use_container_width=True):
+            # Using Type="Primary" for Present to make it colorful safely
+            if st.button("🟢 MARK PRESENT (P)", type="primary", use_container_width=True):
                 cursor.execute("INSERT OR REPLACE INTO attendance (student_id, subject_id, date, status) VALUES (?, (SELECT id FROM subjects WHERE subject_name=?), ?, 'Present')", (s_id, sel_sub, str(target_date)))
                 conn.commit()
                 st.toast(f"{s_name} Marked PRESENT", icon="🟢")
                 if st.session_state.current_idx < len(student_list) - 1: st.session_state.current_idx += 1
                 st.rerun()
                 
-            st.write("<br>", unsafe_allow_html=True)
+            st.markdown("<br>", unsafe_allow_html=True)
             
-            # This is element 4 (Will be RED from CSS)
-            if st.button("❌ MARK ABSENT", use_container_width=True):
+            # Using Default for Absent
+            if st.button("🔴 MARK ABSENT (A)", use_container_width=True):
                 cursor.execute("INSERT OR REPLACE INTO attendance (student_id, subject_id, date, status) VALUES (?, (SELECT id FROM subjects WHERE subject_name=?), ?, 'Absent')", (s_id, sel_sub, str(target_date)))
                 conn.commit()
                 st.toast(f"{s_name} Marked ABSENT", icon="🔴")
@@ -523,7 +391,7 @@ elif menu == "📅 Attendance Table":
                     html_grid += '<td></td>'
                     
             pct = (total_p / tc_count * 100) if tc_count > 0 else 0
-            html_grid += f'<td style="color:#0f172a; font-size:15px;">{pct:.0f}%</td></tr>'
+            html_grid += f'<td style="color:#0f172a; font-weight:bold;">{pct:.0f}%</td></tr>'
             
         html_grid += '</table></div>'
         st.markdown(html_grid, unsafe_allow_html=True)
@@ -539,7 +407,7 @@ elif menu == "👥 Manage Students":
     
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown("<h4 style='color:#0f172a;'>➕ Add New Student</h4>", unsafe_allow_html=True)
+        st.markdown("#### ➕ Add New Student")
         with st.form("add_student_form"):
             new_reg = st.text_input("Registration No")
             new_roll = st.text_input("Roll No")
@@ -553,7 +421,7 @@ elif menu == "👥 Manage Students":
                 else: st.error("Reg No and Name are required.")
 
     with c2:
-        st.markdown("<h4 style='color:#0f172a;'>🗑️ Delete Student</h4>", unsafe_allow_html=True)
+        st.markdown("#### 🗑️ Delete Student")
         with st.form("delete_student_form"):
             del_reg = st.text_input("Enter Reg No to Delete")
             if st.form_submit_button("Delete Student", type="primary"):
@@ -565,10 +433,10 @@ elif menu == "👥 Manage Students":
                     else: st.warning("Record not found.")
                     conn.commit(); conn.close()
 
-    st.write("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     c3, c4 = st.columns(2)
     with c3:
-        st.markdown("<h4 style='color:#0f172a;'>📥 Bulk Import (Excel/CSV)</h4>", unsafe_allow_html=True)
+        st.markdown("#### 📥 Bulk Import (Excel/CSV)")
         with st.form("bulk_import_form"):
             uploaded_file = st.file_uploader("Upload File", type=["csv", "xlsx"])
             if st.form_submit_button("Import Data", type="primary"):
@@ -596,7 +464,7 @@ elif menu == "👥 Manage Students":
                     st.warning("Please select a file first.")
 
     with c4:
-        st.markdown("<h4 style='color:#0f172a;'>📸 Upload Photo Mapping</h4>", unsafe_allow_html=True)
+        st.markdown("#### 📸 Upload Photo Mapping")
         with st.form("photo_upload_form"):
             reg_input = st.text_input("Student Reg No")
             photo_file = st.file_uploader("Image (JPG, PNG)", type=["jpg", "png", "jpeg"])
@@ -607,8 +475,8 @@ elif menu == "👥 Manage Students":
                     st.success("Photo saved!")
                 else: st.error("Reg No and file are required.")
 
-    st.write("<br>", unsafe_allow_html=True)
-    st.markdown("<h4 style='color:#0f172a;'>🧹 Remove Specific Attendance</h4>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("#### 🧹 Remove Specific Attendance")
     with st.form("remove_att_form"):
         r_a1, r_a2 = st.columns(2)
         clr_reg = r_a1.text_input("Enter Target Reg No")
@@ -638,7 +506,7 @@ elif menu == "🏢 College Profile":
     
     c1, c2 = st.columns(2)
     with c1:
-        st.markdown("<h4 style='color:#0f172a;'>🏫 Institutional Config</h4>", unsafe_allow_html=True)
+        st.markdown("#### 🏫 Institutional Config")
         with st.form("college_profile_form"):
             new_c_name = st.text_input("College Name", get_setting('college_name', 'INTERNATIONAL SCHOOL OF MANAGEMENT (ISM)'))
             new_c_sub = st.text_input("Subtitle", get_setting('app_subtitle', 'ATTENDANCE MANAGEMENT SYSTEM'))
@@ -651,7 +519,7 @@ elif menu == "🏢 College Profile":
                 st.rerun()
 
     with c2:
-        st.markdown("<h4 style='color:#0f172a;'>🔐 Security Access</h4>", unsafe_allow_html=True)
+        st.markdown("#### 🔐 Security Access")
         with st.form("login_creds_form"):
             new_admin_pass = st.text_input(f"New Password for {USER_ID}", type="password")
             if st.form_submit_button("Update Password", type="primary"):
@@ -662,10 +530,10 @@ elif menu == "🏢 College Profile":
                     st.success("Updated safely.")
                 else: st.error("Cannot be empty.")
         
-    st.write("<br>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
     c3, c4 = st.columns(2)
     with c3:
-        st.markdown("<h4 style='color:#0f172a;'>📚 Add Subject</h4>", unsafe_allow_html=True)
+        st.markdown("#### 📚 Add Subject")
         with st.form("add_sub_form"):
             n_sub = st.text_input("Subject Name")
             if st.form_submit_button("Add Subject", type="primary"):
@@ -677,7 +545,7 @@ elif menu == "🏢 College Profile":
                     st.rerun()
         
     with c4:
-        st.markdown("<h4 style='color:#0f172a;'>🖼️ College Logo</h4>", unsafe_allow_html=True)
+        st.markdown("#### 🖼️ College Logo")
         with st.form("logo_form"):
             logo_file_new = st.file_uploader("Select PNG/JPG", type=["png", "jpg", "jpeg"])
             if st.form_submit_button("Upload Logo", type="primary"):
@@ -687,8 +555,8 @@ elif menu == "🏢 College Profile":
                     st.rerun()
                 else: st.error("No file selected.")
         
-    st.write("<br>", unsafe_allow_html=True)
-    st.markdown("<h4 style='color:#0f172a;'>🗑️ Delete Subject</h4>", unsafe_allow_html=True)
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("#### 🗑️ Delete Subject")
     with st.form("del_sub_form"):
         d_sub = st.selectbox("Select Subject", get_subjects())
         if st.form_submit_button("Delete Subject", type="primary"):
