@@ -25,119 +25,94 @@ if 'logged_in' not in st.session_state:
     st.session_state.current_user = ""
 
 if not st.session_state.logged_in:
-    # STRICT CSS TO FORCE PERFECT LAYOUT AND REMOVE WHITE SPACES
+    # ⚠️ BULLETPROOF CSS: YEH LEFT SIDE KO KABHI WHITE NAHI HONE DEGA ⚠️
     st.markdown("""
         <style>
-        /* Soft background for the entire page */
-        .stApp { background: #eef2f6; }
+        /* App Background */
+        .stApp { background: #e2e8f0; }
         
-        /* Hide Top Header for a clean login screen */
+        /* Hide default Streamlit header for clean UI */
         header {visibility: hidden;}
-        .block-container { padding-top: 2rem !important; max-width: 1050px !important;}
+        .block-container {padding-top: 2rem !important; max-width: 1000px !important;}
         
-        /* The Main Split Card Wrapper */
-        [data-testid="stHorizontalBlock"] {
-            background-color: white;
+        /* Force the Columns container to become a Single Premium Card */
+        div[data-testid="stHorizontalBlock"] {
+            background-color: transparent !important;
             border-radius: 20px !important;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15) !important;
-            overflow: hidden !important;
-            border: 1px solid #e2e8f0;
-            display: flex;
-            align-items: stretch; /* Forces equal height for both sides */
-            margin-top: 20px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important;
+            margin-top: 30px !important;
         }
         
-        /* Remove gap between columns */
-        [data-testid="stHorizontalBlock"] > div { gap: 0 !important; }
+        /* Remove gap between left and right side */
+        div[data-testid="stHorizontalBlock"] > div {
+            gap: 0 !important;
+        }
         
-        /* LEFT SIDE - STRICT DARK BLUE STYLING */
-        [data-testid="column"]:nth-of-type(1) {
-            background: linear-gradient(145deg, #0b132b, #1c2541, #005073) !important;
+        /* EXACT FIX FOR LEFT SIDE: Force Dark Blue Background */
+        div[data-testid="column"]:nth-child(1) {
+            background: linear-gradient(135deg, #0f172a, #005073) !important;
             padding: 50px 40px !important;
-            border-right: 4px solid #f59e0b;
-        }
-        
-        /* RIGHT SIDE - CLEAN FORM AREA */
-        [data-testid="column"]:nth-of-type(2) {
-            background: #ffffff !important;
-            padding: 40px 40px !important;
-        }
-        
-        /* Kill extra white spaces injected by Streamlit */
-        .stMarkdown:empty { display: none !important; }
-        [data-testid="column"]:nth-of-type(2) > div > div > div:first-child:empty { display: none !important; }
-        
-        /* Tab Styling */
-        .stTabs [data-baseweb="tab-list"] {
-            background-color: transparent;
+            border-radius: 20px 0 0 20px !important;
+            display: flex;
+            flex-direction: column;
             justify-content: center;
-            border-bottom: 2px solid #f1f5f9;
-            margin-bottom: 15px;
         }
-        .stTabs [data-baseweb="tab"] { font-size: 15px; font-weight: 700; color: #64748b; }
-        .stTabs [aria-selected="true"] { color: #f43f5e !important; border-bottom-color: #f43f5e !important;}
         
-        /* Input Fields Styling */
-        .stTextInput input {
-            background-color: #f8fafc;
-            border: 1.5px solid #e2e8f0;
-            border-radius: 10px;
-            padding: 12px;
-            font-size: 15px;
+        /* EXACT FIX FOR RIGHT SIDE: Clean White Form */
+        div[data-testid="column"]:nth-child(2) {
+            background: #ffffff !important;
+            padding: 50px 40px !important;
+            border-radius: 0 20px 20px 0 !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
-        .stTextInput input:focus { border-color: #f43f5e; box-shadow: 0 0 0 1px #f43f5e; }
-        .stTextInput p { font-weight: 600; color: #334155; margin-bottom: 5px; }
         
-        /* Beautiful Gradient Button */
-        .stButton>button {
-            background: linear-gradient(135deg, #f43f5e 0%, #fb923c 100%) !important;
-            color: white !important;
-            font-weight: 900 !important;
-            font-size: 18px !important;
-            border-radius: 10px !important;
-            height: 50px !important;
-            border: none !important;
-            box-shadow: 0 8px 15px rgba(244, 63, 94, 0.25) !important;
-            transition: all 0.3s ease !important;
-            margin-top: 10px;
-            width: 100%;
-        }
-        .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(244, 63, 94, 0.4) !important; }
+        /* Input styling */
+        .stTextInput input { border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 12px; background: #f8fafc;}
+        .stTextInput input:focus { border-color: #ef4444; }
+        .stTextInput p { font-weight: bold; color: #334155; }
+        
+        /* Red Button styling */
+        .stButton>button { width: 100%; background-color: #ef4444 !important; color: white !important; font-weight: bold !important; border-radius: 8px !important; height: 50px !important; border: none !important; transition: 0.3s !important;}
+        .stButton>button:hover { background-color: #dc2626 !important; box-shadow: 0 5px 15px rgba(239,68,68,0.4) !important; transform: translateY(-2px);}
+        
+        /* Tabs styling */
+        .stTabs [data-baseweb="tab-list"] { justify-content: center; background: transparent; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px;}
+        .stTabs [data-baseweb="tab"] { font-weight: bold; font-size: 15px; color: #64748b;}
+        .stTabs [aria-selected="true"] { color: #ef4444 !important; border-bottom-color: #ef4444 !important;}
         </style>
     """, unsafe_allow_html=True)
     
-    # Split Layout
     col1, col2 = st.columns([1.2, 1])
     
     with col1:
-        # Beautiful Left Side Content
+        # Left Side Content
         st.markdown("""
-        <div style="height: 100%; display: flex; flex-direction: column; justify-content: center;">
-            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 5px;">
-                <span style="font-size: 45px;">🎓</span>
-                <h1 style="font-size: 42px; font-weight: 900; margin: 0; color: #ffffff; letter-spacing: 1px;">ISM PATNA</h1>
-            </div>
-            <h3 style="color: #fcd34d; font-weight: 800; margin-top: 0px; font-size: 18px; letter-spacing: 1px;">ATTENDANCE ERP SYSTEM</h3>
-            <p style="font-size: 15px; line-height: 1.8; color: #cbd5e1; margin-top: 25px;">
+        <div>
+            <h1 style="font-size: 40px; font-weight: 900; margin: 0; color: #ffffff; letter-spacing: 1px;">🎓 ISM PATNA</h1>
+            <h3 style="color: #fcd34d; font-weight: 700; margin-top: 5px; font-size: 18px; letter-spacing: 1px;">ATTENDANCE ERP SYSTEM</h3>
+            <p style="font-size: 15px; line-height: 1.6; color: #cbd5e1; margin-top: 25px;">
                 Welcome to the professional Multi-Tenant Attendance ERP Platform. This enterprise portal provides complete data isolation, analytical insights, automated reports, and secure image profile mapping for individual courses and classes.
             </p>
-            <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; border-left: 4px solid #f59e0b; margin-top: 30px;">
-                <b style="color: #fcd34d; font-size: 16px;">💡 Multi-Tenant Isolation Feature:</b><br>
-                <span style="font-size: 14px; color: #f8fafc; display: inline-block; margin-top: 8px; line-height: 1.6;">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</span>
+            <div style="background: rgba(255, 255, 255, 0.08); padding: 20px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-top: 30px;">
+                <b style="color: #fcd34d; font-size: 15px;">💡 Multi-Tenant Isolation Feature:</b><br>
+                <span style="font-size: 14px; color: #f8fafc; display: inline-block; margin-top: 8px; line-height: 1.5;">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
     with col2:
-        # Gradient Title
-        st.markdown("<h2 style='text-align:center; background: -webkit-linear-gradient(45deg, #f43f5e, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; margin-top: 0; margin-bottom: 5px;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
+        # Right Side Content
+        st.markdown("<h2 style='text-align:center; color: #0f172a; font-weight: 900; margin-top: 0; margin-bottom: 10px;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
         
         tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 REGISTER NEW CLASS"])
         
         with tab1:
             l_user = st.text_input("User ID", placeholder="Enter User ID", key="login_uid_field")
             l_pass = st.text_input("Password", type="password", placeholder="Enter Password", key="login_pwd_field")
-            if st.button("SECURE LOGIN", type="primary"):
+            st.write("")
+            if st.button("SECURE LOGIN", type="primary", use_container_width=True):
                 conn = sqlite3.connect(MASTER_DB)
                 res = conn.execute("SELECT * FROM users WHERE username=? AND password=?", (l_user.strip(), l_pass)).fetchone()
                 conn.close()
@@ -151,13 +126,14 @@ if not st.session_state.logged_in:
         with tab2:
             n_user = st.text_input("User ID", placeholder="Choose User ID (e.g., BCA_Sem1)")
             n_pass = st.text_input("Password", type="password", placeholder="Create Password")
-            if st.button("REGISTER ACCOUNT", type="primary"):
+            st.write("")
+            if st.button("REGISTER ACCOUNT", type="primary", use_container_width=True):
                 if n_user and n_pass:
                     conn = sqlite3.connect(MASTER_DB)
                     try:
                         conn.execute("INSERT INTO users (username, password) VALUES (?, ?)", (n_user.strip(), n_pass))
                         conn.commit()
-                        st.success(f"✅ Registered '{n_user}' successfully! Please switch to the Login tab.")
+                        st.success(f"✅ Registered '{n_user}' successfully! Switch to Login tab.")
                     except sqlite3.IntegrityError:
                         st.error("⚠️ This User ID already exists. Try another name.")
                     conn.close()
