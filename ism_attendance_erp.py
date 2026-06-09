@@ -8,29 +8,8 @@ import os
 import base64
 
 # --- 1. PAGE SETUP & SAFE CSS ---
-st.set_page_config(layout="wide", page_title="ISM Attendance ERP", page_icon="🎓")
-
-st.markdown("""
-    <style>
-    /* Safe global tweaks */
-    .stApp { background-color: #f8fafc; }
-    header { visibility: hidden; }
-    
-    /* Clean Tab Styling */
-    .stTabs [data-baseweb="tab-list"] { justify-content: center; }
-    .stTabs [data-baseweb="tab"] { font-weight: bold; }
-    
-    /* Attendance Table Styling */
-    .excel-table-container { overflow-x: auto; max-height: 600px; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-    .excel-table { width: 100%; border-collapse: collapse; background: white; font-size: 14px; }
-    .excel-table th { background: #0f172a; color: white; padding: 12px; position: sticky; top: 0; z-index: 2; text-align: center; }
-    .excel-table td { padding: 10px; border: 1px solid #e2e8f0; text-align: center; }
-    .row-even { background-color: #f8fafc; }
-    .row-odd { background-color: #ffffff; }
-    .status-p { background: #10b981; color: white; font-weight: bold; }
-    .status-a { background: #ef4444; color: white; font-weight: bold; }
-    </style>
-""", unsafe_allow_html=True)
+# initial_sidebar_state="expanded" ensures sidebar starts open
+st.set_page_config(layout="wide", page_title="ISM Attendance ERP", page_icon="🎓", initial_sidebar_state="expanded")
 
 # --- 2. MASTER USER DATABASE ---
 MASTER_DB = 'master_users.db'
@@ -49,7 +28,19 @@ if 'logged_in' not in st.session_state:
     st.session_state.current_user = ""
 
 if not st.session_state.logged_in:
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    # SAFE CSS: Top menu/header is NOT hidden so Dark Mode & Sidebar toggle works!
+    st.markdown("""
+        <style>
+        .stApp { background-color: #f8fafc; }
+        .block-container { padding-top: 2rem !important; max-width: 1000px !important; }
+        
+        /* Clean Tab Styling */
+        .stTabs [data-baseweb="tab-list"] { justify-content: center; }
+        .stTabs [data-baseweb="tab"] { font-weight: bold; }
+        </style>
+    """, unsafe_allow_html=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
     col1, col2 = st.columns([1.2, 1], gap="large")
     
     with col1:
@@ -118,6 +109,32 @@ DB_NAME = f"database_{USER_ID}.db"
 PHOTO_DIR = f"photos_{USER_ID}"
 LOGO_FILE = f"logo_{USER_ID}.png"
 os.makedirs(PHOTO_DIR, exist_ok=True)
+
+# FULL APP CSS (TABLE COLUMN FIX ADDED HERE)
+st.markdown("""
+    <style>
+    /* Make the block container take full width */
+    .block-container { padding-top: 2rem !important; max-width: 95% !important; }
+    
+    /* Attendance Table Styling */
+    .excel-table-container { overflow-x: auto; max-height: 650px; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    .excel-table { width: 100%; border-collapse: collapse; background: white; font-size: 14px; white-space: nowrap; }
+    .excel-table th { background: #0f172a; color: white; padding: 12px; position: sticky; top: 0; z-index: 2; text-align: center; }
+    .excel-table td { padding: 10px; border: 1px solid #e2e8f0; text-align: center; }
+    
+    /* 🔥 EXACT FIX FOR STUDENT NAME COLUMN WIDTH 🔥 */
+    .excel-table th:nth-child(3), .excel-table td:nth-child(3) { 
+        min-width: 300px !important; 
+        text-align: left !important; 
+        padding-left: 15px !important;
+    }
+    
+    .row-even { background-color: #f8fafc; }
+    .row-odd { background-color: #ffffff; }
+    .status-p { background: #10b981; color: white; font-weight: bold; }
+    .status-a { background: #ef4444; color: white; font-weight: bold; }
+    </style>
+""", unsafe_allow_html=True)
 
 def init_user_db():
     conn = sqlite3.connect(DB_NAME)
@@ -274,7 +291,7 @@ elif menu == "📝 Mark Attendance":
                     <div style='width: 40px; height: 5px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 10px auto;'></div>
                     STUDENT ID CARD
                 </div>
-                <div style='padding: 25px 20px; background: url("data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' viewBox=\'0 0 20 20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'%23f1f5f9\' fill-opacity=\'0.4\' fill-rule=\'evenodd\'%3E%3Ccircle cx=\'3\' cy=\'3\' r=\'3\'/%3E%3Ccircle cx=\'13\' cy=\'13\' r=\'3\'/%3E%3C/g%3E%3C/svg%3E");'>
+                <div style='padding: 25px 20px;'>
                     <img src='{photo_url}' style='width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 5px solid white; box-shadow: 0 5px 15px rgba(0,0,0,0.15); margin-bottom: 15px;'>
                     <h2 style='color: #0f172a; font-size: 24px; font-weight: 900; margin: 0;'>{s_name}</h2>
                     <div style='background: #f1f5f9; color: #ef4444; padding: 6px 15px; border-radius: 6px; font-weight: bold; margin: 10px 0; border: 1px solid #e2e8f0; display: inline-block;'>
@@ -305,7 +322,7 @@ elif menu == "📝 Mark Attendance":
         with col_btn:
             st.markdown("<br><br><br>", unsafe_allow_html=True)
             
-            # Using Type="Primary" for Present to make it colorful safely
+            # Safe Native Buttons
             if st.button("🟢 MARK PRESENT (P)", type="primary", use_container_width=True):
                 cursor.execute("INSERT OR REPLACE INTO attendance (student_id, subject_id, date, status) VALUES (?, (SELECT id FROM subjects WHERE subject_name=?), ?, 'Present')", (s_id, sel_sub, str(target_date)))
                 conn.commit()
@@ -315,7 +332,6 @@ elif menu == "📝 Mark Attendance":
                 
             st.markdown("<br>", unsafe_allow_html=True)
             
-            # Using Default for Absent
             if st.button("🔴 MARK ABSENT (A)", use_container_width=True):
                 cursor.execute("INSERT OR REPLACE INTO attendance (student_id, subject_id, date, status) VALUES (?, (SELECT id FROM subjects WHERE subject_name=?), ?, 'Absent')", (s_id, sel_sub, str(target_date)))
                 conn.commit()
@@ -364,7 +380,7 @@ elif menu == "📅 Attendance Table":
         tc_count = cursor.execute("SELECT COUNT(DISTINCT date) FROM attendance WHERE subject_id=(SELECT id FROM subjects WHERE subject_name=?) AND date LIKE ?", (sel_sub, date_pattern)).fetchone()[0] or 0
             
         html_grid = '<div class="excel-table-container"><table class="excel-table">'
-        html_grid += '<tr><th>Reg No</th><th>Roll</th><th style="text-align:left;">Student Name</th>'
+        html_grid += '<tr><th>Reg No</th><th>Roll</th><th>Student Name</th>'
         for d in range(1, num_days + 1): html_grid += f'<th>{d}</th>'
         html_grid += '<th>%</th></tr>'
         
@@ -376,7 +392,7 @@ elif menu == "📅 Attendance Table":
             
             html_grid += f'<td>{row["reg_no"]}</td>'
             html_grid += f'<td>{row["roll_no"]}</td>'
-            html_grid += f'<td style="text-align:left;">{row["name"]}</td>'
+            html_grid += f'<td>{row["name"]}</td>'
             
             total_p = 0
             s_reg_str = row['reg_no']
