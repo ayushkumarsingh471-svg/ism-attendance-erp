@@ -19,92 +19,99 @@ def init_master_db():
 
 init_master_db()
 
-# --- 3. LOGIN & REGISTRATION SUPER PREMIUM UI ---
+# --- 3. LOGIN & REGISTRATION EXACT UI MATCH ---
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.current_user = ""
 
 if not st.session_state.logged_in:
-    # ⚠️ BULLETPROOF CSS: YEH LEFT SIDE KO KABHI WHITE NAHI HONE DEGA ⚠️
+    # EXACT CSS FIX FOR IMAGE 2 LOOK
     st.markdown("""
         <style>
-        /* App Background */
-        .stApp { background: #e2e8f0; }
+        /* General background */
+        .stApp { background: #f4f6f9; }
         
-        /* Hide default Streamlit header for clean UI */
+        /* Hide native Streamlit headers */
         header {visibility: hidden;}
-        .block-container {padding-top: 2rem !important; max-width: 1000px !important;}
+        #MainMenu {visibility: hidden;}
         
-        /* Force the Columns container to become a Single Premium Card */
-        div[data-testid="stHorizontalBlock"] {
-            background-color: transparent !important;
-            border-radius: 20px !important;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important;
-            margin-top: 30px !important;
+        /* Container for the split view */
+        .login-container {
+            display: flex;
+            max-width: 1050px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
         }
         
-        /* Remove gap between left and right side */
-        div[data-testid="stHorizontalBlock"] > div {
-            gap: 0 !important;
-        }
-        
-        /* EXACT FIX FOR LEFT SIDE: Force Dark Blue Background */
-        div[data-testid="column"]:nth-child(1) {
-            background: linear-gradient(135deg, #0f172a, #005073) !important;
-            padding: 50px 40px !important;
-            border-radius: 20px 0 0 20px !important;
+        /* LEFT SIDE: Deep Blue Information Panel */
+        .left-panel {
+            flex: 1.2;
+            background: linear-gradient(135deg, #0f172a, #005073);
+            color: white;
+            padding: 50px 40px;
+            border-right: 4px solid #f59e0b;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
         
-        /* EXACT FIX FOR RIGHT SIDE: Clean White Form */
-        div[data-testid="column"]:nth-child(2) {
-            background: #ffffff !important;
-            padding: 50px 40px !important;
-            border-radius: 0 20px 20px 0 !important;
+        /* RIGHT SIDE: White Login Form Area */
+        .right-panel {
+            flex: 1;
+            padding: 40px 50px;
+            background: #ffffff;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
         
-        /* Input styling */
-        .stTextInput input { border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 12px; background: #f8fafc;}
-        .stTextInput input:focus { border-color: #ef4444; }
-        .stTextInput p { font-weight: bold; color: #334155; }
+        /* Text Styles inside Left Panel */
+        .lp-title { font-size: 38px; font-weight: 900; margin: 0; color: white; display: flex; align-items: center; gap: 10px;}
+        .lp-subtitle { color: #fcd34d; font-size: 16px; font-weight: 700; margin-top: 5px; margin-bottom: 25px; letter-spacing: 1px;}
+        .lp-desc { font-size: 14px; line-height: 1.6; color: #cbd5e1; margin-bottom: 30px;}
+        .lp-feature { background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 8px; border-left: 4px solid #f59e0b;}
+        .lp-feature-title { color: #fcd34d; font-weight: bold; font-size: 14px; margin-bottom: 5px;}
+        .lp-feature-text { color: #f8fafc; font-size: 13px; line-height: 1.5; margin: 0;}
+
+        /* Form Native Overrides */
+        .stTextInput input { border-radius: 8px; border: 1px solid #cbd5e1; padding: 10px; font-size: 15px;}
+        .stTextInput p { font-weight: bold; color: #334155; margin-bottom: 5px;}
+        .stButton>button { width: 100%; border-radius: 8px; height: 45px; background-color: #f43f5e !important; color: white !important; font-weight: bold; border: none; transition: 0.2s;}
+        .stButton>button:hover { background-color: #e11d48 !important; transform: translateY(-2px);}
         
-        /* Red Button styling */
-        .stButton>button { width: 100%; background-color: #ef4444 !important; color: white !important; font-weight: bold !important; border-radius: 8px !important; height: 50px !important; border: none !important; transition: 0.3s !important;}
-        .stButton>button:hover { background-color: #dc2626 !important; box-shadow: 0 5px 15px rgba(239,68,68,0.4) !important; transform: translateY(-2px);}
+        /* Hide Streamlit Empty Elements */
+        .element-container:empty { display: none !important; }
         
-        /* Tabs styling */
-        .stTabs [data-baseweb="tab-list"] { justify-content: center; background: transparent; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px;}
-        .stTabs [data-baseweb="tab"] { font-weight: bold; font-size: 15px; color: #64748b;}
-        .stTabs [aria-selected="true"] { color: #ef4444 !important; border-bottom-color: #ef4444 !important;}
         </style>
     """, unsafe_allow_html=True)
+    
+    # Render the pure HTML/CSS split layout structure
+    st.markdown('<div class="login-container">', unsafe_allow_html=True)
     
     col1, col2 = st.columns([1.2, 1])
     
     with col1:
-        # Left Side Content
         st.markdown("""
-        <div>
-            <h1 style="font-size: 40px; font-weight: 900; margin: 0; color: #ffffff; letter-spacing: 1px;">🎓 ISM PATNA</h1>
-            <h3 style="color: #fcd34d; font-weight: 700; margin-top: 5px; font-size: 18px; letter-spacing: 1px;">ATTENDANCE ERP SYSTEM</h3>
-            <p style="font-size: 15px; line-height: 1.6; color: #cbd5e1; margin-top: 25px;">
+        <div class="left-panel">
+            <div class="lp-title">🎓 ISM PATNA</div>
+            <div class="lp-subtitle">ATTENDANCE ERP SYSTEM</div>
+            <p class="lp-desc">
                 Welcome to the professional Multi-Tenant Attendance ERP Platform. This enterprise portal provides complete data isolation, analytical insights, automated reports, and secure image profile mapping for individual courses and classes.
             </p>
-            <div style="background: rgba(255, 255, 255, 0.08); padding: 20px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-top: 30px;">
-                <b style="color: #fcd34d; font-size: 15px;">💡 Multi-Tenant Isolation Feature:</b><br>
-                <span style="font-size: 14px; color: #f8fafc; display: inline-block; margin-top: 8px; line-height: 1.5;">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</span>
+            <div class="lp-feature">
+                <div class="lp-feature-title">💡 Multi-Tenant Isolation Feature:</div>
+                <p class="lp-feature-text">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</p>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
     with col2:
-        # Right Side Content
-        st.markdown("<h2 style='text-align:center; color: #0f172a; font-weight: 900; margin-top: 0; margin-bottom: 10px;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
+        st.markdown("<div class='right-panel'>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align:center; color:#0f172a; font-weight:900; margin-top:0; margin-bottom:15px;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
         
         tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 REGISTER NEW CLASS"])
         
@@ -112,7 +119,7 @@ if not st.session_state.logged_in:
             l_user = st.text_input("User ID", placeholder="Enter User ID", key="login_uid_field")
             l_pass = st.text_input("Password", type="password", placeholder="Enter Password", key="login_pwd_field")
             st.write("")
-            if st.button("SECURE LOGIN", type="primary", use_container_width=True):
+            if st.button("SECURE LOGIN", type="primary"):
                 conn = sqlite3.connect(MASTER_DB)
                 res = conn.execute("SELECT * FROM users WHERE username=? AND password=?", (l_user.strip(), l_pass)).fetchone()
                 conn.close()
@@ -127,7 +134,7 @@ if not st.session_state.logged_in:
             n_user = st.text_input("User ID", placeholder="Choose User ID (e.g., BCA_Sem1)")
             n_pass = st.text_input("Password", type="password", placeholder="Create Password")
             st.write("")
-            if st.button("REGISTER ACCOUNT", type="primary", use_container_width=True):
+            if st.button("REGISTER ACCOUNT", type="primary"):
                 if n_user and n_pass:
                     conn = sqlite3.connect(MASTER_DB)
                     try:
@@ -140,6 +147,9 @@ if not st.session_state.logged_in:
                 else:
                     st.error("Both fields are required.")
                     
+        st.markdown("</div>", unsafe_allow_html=True) # close right panel
+        
+    st.markdown('</div>', unsafe_allow_html=True) # close login container
     st.stop()
 
 # =========================================================================
