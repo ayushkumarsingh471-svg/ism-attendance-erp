@@ -19,106 +19,95 @@ def init_master_db():
 
 init_master_db()
 
-# --- 3. LOGIN & REGISTRATION EXACT UI MATCH ---
+# --- 3. LOGIN & REGISTRATION SUPER PREMIUM UI ---
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.current_user = ""
 
 if not st.session_state.logged_in:
-    # EXACT CSS FIX FOR IMAGE 2 LOOK
+    # STRICT CSS TO FORCE PERFECT LAYOUT FOR LOGIN SCREEN
     st.markdown("""
         <style>
-        /* General background */
-        .stApp { background: #f4f6f9; }
-        
-        /* Hide native Streamlit headers */
+        .stApp { background: #e2e8f0; }
         header {visibility: hidden;}
         #MainMenu {visibility: hidden;}
+        .block-container {padding-top: 2rem !important; max-width: 1000px !important;}
         
-        /* Container for the split view */
-        .login-container {
+        [data-testid="stHorizontalBlock"] {
+            background-color: transparent !important;
+            border-radius: 20px !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important;
+            margin-top: 30px !important;
             display: flex;
-            max-width: 1050px;
-            margin: 40px auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
+            align-items: stretch;
         }
+        [data-testid="stHorizontalBlock"] > div { gap: 0 !important; }
         
-        /* LEFT SIDE: Deep Blue Information Panel */
-        .left-panel {
-            flex: 1.2;
-            background: linear-gradient(135deg, #0f172a, #005073);
-            color: white;
-            padding: 50px 40px;
+        /* LEFT SIDE */
+        [data-testid="column"]:nth-child(1) {
+            background: linear-gradient(135deg, #0f172a, #005073) !important;
+            padding: 50px 40px !important;
+            border-radius: 20px 0 0 20px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             border-right: 4px solid #f59e0b;
+        }
+        
+        /* RIGHT SIDE */
+        [data-testid="column"]:nth-child(2) {
+            background: #ffffff !important;
+            padding: 50px 40px !important;
+            border-radius: 0 20px 20px 0 !important;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
         
-        /* RIGHT SIDE: White Login Form Area */
-        .right-panel {
-            flex: 1;
-            padding: 40px 50px;
-            background: #ffffff;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
+        .stMarkdown:empty { display: none !important; }
+        [data-testid="column"]:nth-child(2) > div > div > div:first-child:empty { display: none !important; }
         
-        /* Text Styles inside Left Panel */
-        .lp-title { font-size: 38px; font-weight: 900; margin: 0; color: white; display: flex; align-items: center; gap: 10px;}
-        .lp-subtitle { color: #fcd34d; font-size: 16px; font-weight: 700; margin-top: 5px; margin-bottom: 25px; letter-spacing: 1px;}
-        .lp-desc { font-size: 14px; line-height: 1.6; color: #cbd5e1; margin-bottom: 30px;}
-        .lp-feature { background: rgba(255,255,255,0.05); padding: 15px 20px; border-radius: 8px; border-left: 4px solid #f59e0b;}
-        .lp-feature-title { color: #fcd34d; font-weight: bold; font-size: 14px; margin-bottom: 5px;}
-        .lp-feature-text { color: #f8fafc; font-size: 13px; line-height: 1.5; margin: 0;}
-
-        /* Form Native Overrides */
-        .stTextInput input { border-radius: 8px; border: 1px solid #cbd5e1; padding: 10px; font-size: 15px;}
-        .stTextInput p { font-weight: bold; color: #334155; margin-bottom: 5px;}
-        .stButton>button { width: 100%; border-radius: 8px; height: 45px; background-color: #f43f5e !important; color: white !important; font-weight: bold; border: none; transition: 0.2s;}
-        .stButton>button:hover { background-color: #e11d48 !important; transform: translateY(-2px);}
+        .stTextInput input { border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 12px; background: #f8fafc;}
+        .stTextInput input:focus { border-color: #ef4444; }
+        .stTextInput p { font-weight: bold; color: #334155; }
         
-        /* Hide Streamlit Empty Elements */
-        .element-container:empty { display: none !important; }
+        .stButton>button { width: 100%; background: linear-gradient(135deg, #f43f5e 0%, #fb923c 100%) !important; color: white !important; font-weight: 900 !important; font-size: 18px !important; border-radius: 10px !important; height: 50px !important; border: none !important; box-shadow: 0 8px 15px rgba(244, 63, 94, 0.25) !important; transition: all 0.3s ease !important; margin-top: 10px;}
+        .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(244, 63, 94, 0.4) !important; }
         
+        .stTabs [data-baseweb="tab-list"] { justify-content: center; background: transparent; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px;}
+        .stTabs [data-baseweb="tab"] { font-weight: bold; font-size: 15px; color: #64748b;}
+        .stTabs [aria-selected="true"] { color: #f43f5e !important; border-bottom-color: #f43f5e !important;}
         </style>
     """, unsafe_allow_html=True)
-    
-    # Render the pure HTML/CSS split layout structure
-    st.markdown('<div class="login-container">', unsafe_allow_html=True)
     
     col1, col2 = st.columns([1.2, 1])
     
     with col1:
         st.markdown("""
-        <div class="left-panel">
-            <div class="lp-title">🎓 ISM PATNA</div>
-            <div class="lp-subtitle">ATTENDANCE ERP SYSTEM</div>
-            <p class="lp-desc">
+        <div>
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 5px;">
+                <span style="font-size: 45px;">🎓</span>
+                <h1 style="font-size: 42px; font-weight: 900; margin: 0; color: #ffffff; letter-spacing: 1px;">ISM PATNA</h1>
+            </div>
+            <h3 style="color: #fcd34d; font-weight: 800; margin-top: 0px; font-size: 18px; letter-spacing: 1px;">ATTENDANCE ERP SYSTEM</h3>
+            <p style="font-size: 15px; line-height: 1.8; color: #cbd5e1; margin-top: 25px;">
                 Welcome to the professional Multi-Tenant Attendance ERP Platform. This enterprise portal provides complete data isolation, analytical insights, automated reports, and secure image profile mapping for individual courses and classes.
             </p>
-            <div class="lp-feature">
-                <div class="lp-feature-title">💡 Multi-Tenant Isolation Feature:</div>
-                <p class="lp-feature-text">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</p>
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; border-left: 4px solid #f59e0b; margin-top: 30px;">
+                <b style="color: #fcd34d; font-size: 16px;">💡 Multi-Tenant Isolation Feature:</b><br>
+                <span style="font-size: 14px; color: #f8fafc; display: inline-block; margin-top: 8px; line-height: 1.6;">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
     with col2:
-        st.markdown("<div class='right-panel'>", unsafe_allow_html=True)
-        st.markdown("<h2 style='text-align:center; color:#0f172a; font-weight:900; margin-top:0; margin-bottom:15px;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align:center; background: -webkit-linear-gradient(45deg, #f43f5e, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; margin-top: 0; margin-bottom: 5px;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
         
         tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 REGISTER NEW CLASS"])
         
         with tab1:
             l_user = st.text_input("User ID", placeholder="Enter User ID", key="login_uid_field")
             l_pass = st.text_input("Password", type="password", placeholder="Enter Password", key="login_pwd_field")
-            st.write("")
             if st.button("SECURE LOGIN", type="primary"):
                 conn = sqlite3.connect(MASTER_DB)
                 res = conn.execute("SELECT * FROM users WHERE username=? AND password=?", (l_user.strip(), l_pass)).fetchone()
@@ -133,7 +122,6 @@ if not st.session_state.logged_in:
         with tab2:
             n_user = st.text_input("User ID", placeholder="Choose User ID (e.g., BCA_Sem1)")
             n_pass = st.text_input("Password", type="password", placeholder="Create Password")
-            st.write("")
             if st.button("REGISTER ACCOUNT", type="primary"):
                 if n_user and n_pass:
                     conn = sqlite3.connect(MASTER_DB)
@@ -147,9 +135,6 @@ if not st.session_state.logged_in:
                 else:
                     st.error("Both fields are required.")
                     
-        st.markdown("</div>", unsafe_allow_html=True) # close right panel
-        
-    st.markdown('</div>', unsafe_allow_html=True) # close login container
     st.stop()
 
 # =========================================================================
@@ -161,19 +146,48 @@ PHOTO_DIR = f"photos_{USER_ID}"
 LOGO_FILE = f"logo_{USER_ID}.png"
 os.makedirs(PHOTO_DIR, exist_ok=True)
 
-# Main App CSS (Applies only after login)
+# FULL PAGE CSS - PREMIUM ACTIVE LOOK AFTER LOGIN
 st.markdown("""
     <style>
-    .stApp { background: #f0f4f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; } 
+    /* Gorgeous Light Background for Full Page */
+    .stApp { background: linear-gradient(135deg, #eef2f6 0%, #dbeafe 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; } 
+    
     div[data-testid="stSidebar"] { background-color: #1e293b; color: white !important; border-right: 2px solid #005073; }
     div[data-testid="stSidebar"] * { color: white !important; }
-    .panel-box { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #005073; margin-bottom: 20px; transition: transform 0.3s; }
-    .panel-box:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
     
-    .profile-card-left { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); text-align: center; border: 1px solid #e2e8f0; height: 100%; }
-    .profile-pic-left { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 5px solid #f8fafc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: 0 auto; display: block; }
-    .id-badge { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000 !important; padding: 6px 20px; border-radius: 25px; display: inline-block; font-weight: 900; font-size: 16px; margin-bottom: 5px; box-shadow: 0 4px 6px rgba(245,158,11,0.3); border: 2px solid #fff; }
+    .panel-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); border-top: 4px solid #005073; margin-bottom: 20px; transition: transform 0.3s; }
+    .panel-box:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
     
+    /* Make all generic buttons look premium and chunky */
+    div[data-testid="stButton"] button {
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 800;
+        font-size: 16px;
+        border: 2px solid #cbd5e1;
+        transition: all 0.3s ease;
+        background: white;
+        color: #0f172a;
+    }
+    div[data-testid="stButton"] button:hover {
+        border-color: #005073;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        color: #005073;
+    }
+    
+    /* Specific coloring for primary buttons (like logout) */
+    div[data-testid="stButton"] button[kind="primary"] {
+        background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+        color: white !important;
+        border: none;
+    }
+    div[data-testid="stButton"] button[kind="primary"]:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+        box-shadow: 0 8px 15px rgba(239, 68, 68, 0.3);
+    }
+    
+    /* Attendance Master Table */
     .excel-table-container { overflow-x: auto; width: 100%; max-height: 700px; background-color: white; border-radius: 8px; border: 2px solid #cbd5e1; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     .excel-table { width: 100%; border-collapse: collapse; font-size: 14px; white-space: nowrap; }
     .excel-table th { background-color: #0f172a; color: white; padding: 12px; font-weight: bold; text-align: center; position: sticky; top: 0; z-index: 2; border: 1px solid #334155; }
@@ -191,13 +205,6 @@ st.markdown("""
     
     .status-p { background-color: #10b981 !important; color: white !important; font-size: 16px; font-weight: 900; }
     .status-a { background-color: #ef4444 !important; color: white !important; font-size: 16px; font-weight: 900; }
-    
-    .stButton>button { width: 100%; font-weight: bold; border-radius: 8px; transition: all 0.2s; }
-    .stButton>button:active { transform: scale(0.95); }
-    .btn-vertical-p button { background: linear-gradient(145deg, #10b981, #059669) !important; color: white !important; height: 90px; font-size: 24px !important; margin-bottom: 10px; border: none; box-shadow: 0 5px 15px rgba(16,185,129,0.3); }
-    .btn-vertical-p button:hover { transform: translateY(-3px); }
-    .btn-vertical-a button { background: linear-gradient(145deg, #ef4444, #dc2626) !important; color: white !important; height: 90px; font-size: 24px !important; border: none; box-shadow: 0 5px 15px rgba(239,68,68,0.3); }
-    .btn-vertical-a button:hover { transform: translateY(-3px); }
     </style>
 """, unsafe_allow_html=True)
 
@@ -330,7 +337,7 @@ if menu == "📊 Dashboard":
     c4.markdown(f'<div class="panel-box" style="text-align:center; background:#28a745; color:white;"><h4>Present on {target_date.strftime("%d %b")}</h4><h2>{present_today}</h2></div>', unsafe_allow_html=True)
 
 # =========================================================================
-# TAB 2: MARK ATTENDANCE
+# TAB 2: MARK ATTENDANCE (ACTIVE COLOR PROFILE CARD)
 # =========================================================================
 elif menu == "📝 Mark Attendance":
     st.markdown("### 📝 Active Mark Attendance Panel")
@@ -356,15 +363,21 @@ elif menu == "📝 Mark Attendance":
         photo_url = get_student_photo_url(s_reg)
         
         st.write("")
-        col_prof, col_btn = st.columns([2.5, 1.5])
+        col_prof, col_btn = st.columns([2.5, 1.5], gap="large")
         
         with col_prof:
+            # GORGEOUS GLASSY GRADIENT PROFILE CARD
             profile_html = f"""
-            <div class='profile-card-left'>
-                <img src='{photo_url}' class='profile-pic-left'>
-                <h1 style='margin: 15px 0 5px 0; color:#0f172a; font-size:28px;'>{s_name}</h1>
-                <div class='id-badge'>🆔 REG NO: {s_reg}</div>
-                <h4 style='margin: 5px 0 0 0; color:#64748b; font-size: 16px;'>ROLL NO: {s_roll}</h4>
+            <div style='background: linear-gradient(135deg, #e0f2fe 0%, #c7d2fe 100%); border-radius: 20px; padding: 35px 25px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); text-align: center; border: 3px solid #ffffff; height: 100%; position: relative; overflow: hidden;'>
+                <div style='position: absolute; top: -50px; left: -50px; width: 150px; height: 150px; background: rgba(255,255,255,0.4); border-radius: 50%; filter: blur(20px);'></div>
+                
+                <img src='{photo_url}' style='width: 160px; height: 160px; border-radius: 50%; object-fit: cover; border: 6px solid #ffffff; box-shadow: 0 10px 25px rgba(0,0,0,0.15); margin: 0 auto; display: block; position: relative; z-index: 2;'>
+                
+                <h1 style='margin: 20px 0 5px 0; color:#0f172a; font-size:32px; font-weight: 900; position: relative; z-index: 2;'>{s_name}</h1>
+                
+                <div style='background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000; padding: 8px 25px; border-radius: 30px; display: inline-block; font-weight: 900; font-size: 16px; margin-top: 10px; margin-bottom: 5px; box-shadow: 0 5px 15px rgba(245,158,11,0.3); border: 2px solid #fff; position: relative; z-index: 2;'>🆔 REG NO: {s_reg}</div>
+                
+                <h4 style='margin: 10px 0 0 0; color:#334155; font-size: 18px; font-weight: 800; position: relative; z-index: 2;'>ROLL NO: {s_roll}</h4>
             </div>
             """
             st.markdown(profile_html, unsafe_allow_html=True)
@@ -377,30 +390,29 @@ elif menu == "📝 Mark Attendance":
                 st.rerun()
                 
             n1, n2 = st.columns(2)
-            if n1.button("◀ PREVIOUS STUDENT"):
+            if n1.button("◀ PREVIOUS STUDENT", use_container_width=True):
                 if st.session_state.current_idx > 0: st.session_state.current_idx -= 1; st.rerun()
-            if n2.button("NEXT STUDENT ▶"):
+            if n2.button("NEXT STUDENT ▶", use_container_width=True):
                 if st.session_state.current_idx < len(student_list) - 1: st.session_state.current_idx += 1; st.rerun()
 
         with col_btn:
             st.markdown("<div style='padding: 20px 0;'></div>", unsafe_allow_html=True) 
-            st.markdown('<div class="btn-vertical-p">', unsafe_allow_html=True)
-            if st.button("✅ PRESENT (P)"):
+            
+            if st.button("✅ MARK PRESENT (P)", use_container_width=True):
                 cursor.execute("INSERT OR REPLACE INTO attendance (student_id, subject_id, date, status) VALUES (?, (SELECT id FROM subjects WHERE subject_name=?), ?, 'Present')", (s_id, sel_sub, str(target_date)))
                 conn.commit()
                 st.toast(f"{s_name} Marked PRESENT", icon="🟢")
                 if st.session_state.current_idx < len(student_list) - 1: st.session_state.current_idx += 1
                 st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
             
-            st.markdown('<div class="btn-vertical-a">', unsafe_allow_html=True)
-            if st.button("❌ ABSENT (A)"):
+            st.markdown("<div style='padding: 5px 0;'></div>", unsafe_allow_html=True) 
+            
+            if st.button("❌ MARK ABSENT (A)", use_container_width=True):
                 cursor.execute("INSERT OR REPLACE INTO attendance (student_id, subject_id, date, status) VALUES (?, (SELECT id FROM subjects WHERE subject_name=?), ?, 'Absent')", (s_id, sel_sub, str(target_date)))
                 conn.commit()
                 st.toast(f"{s_name} Marked ABSENT", icon="🔴")
                 if st.session_state.current_idx < len(student_list) - 1: st.session_state.current_idx += 1
                 st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True)
             
     else:
         st.warning("No students available. Go to Manage Students to import records.")
