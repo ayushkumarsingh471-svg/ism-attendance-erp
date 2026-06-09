@@ -7,84 +7,8 @@ import io
 import os
 import base64
 
-# --- 1. PAGE SETUP & GLOBAL PREMIUM CSS ---
+# --- 1. PAGE SETUP & GLOBAL CSS ---
 st.set_page_config(layout="wide", page_title="ISM Attendance ERP", page_icon="🎓")
-
-st.markdown("""
-    <style>
-    .stApp { background: #f0f4f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; } 
-    
-    /* Login Split Screen UI */
-    .info-box {
-        background: linear-gradient(135deg, #0f172a, #005073);
-        color: white;
-        padding: 50px 40px;
-        border-radius: 15px;
-        height: 100%;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        border-right: 5px solid #f59e0b;
-    }
-    .info-title { font-size: 38px; font-weight: 900; margin: 0 0 5px 0; letter-spacing: 1px; display: flex; align-items: center; gap: 15px;}
-    .info-sub { color: #fcd34d; font-size: 18px; font-weight: 700; margin-bottom: 25px; letter-spacing: 0.5px;}
-    .info-text { font-size: 15px; line-height: 1.6; color: #e2e8f0; margin-bottom: 35px; }
-    
-    .feature-card { 
-        background: rgba(255, 255, 255, 0.08); 
-        padding: 20px; 
-        border-radius: 10px; 
-        border-left: 4px solid #f59e0b; 
-    }
-    .feature-card-title { color: #fcd34d; font-size: 15px; font-weight: bold; margin-bottom: 8px;}
-    .feature-card-text { font-size: 14px; color: #f8fafc; margin: 0; line-height: 1.5;}
-    
-    .form-box {
-        background: white;
-        padding: 40px 30px;
-        border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        border: 1px solid #e2e8f0;
-        height: 100%;
-    }
-    .form-title { text-align: center; color: #0f172a; font-size: 28px; font-weight: bold; margin-bottom: 20px; }
-    
-    /* Main App Panel Boxes */
-    .panel-box { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #005073; margin-bottom: 20px; transition: transform 0.3s; }
-    .panel-box:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
-    
-    /* Mark Attendance Layout */
-    .profile-card-left { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); text-align: center; border: 1px solid #e2e8f0; height: 100%; }
-    .profile-pic-left { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 5px solid #f8fafc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: 0 auto; display: block; }
-    .id-badge { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000 !important; padding: 6px 20px; border-radius: 25px; display: inline-block; font-weight: 900; font-size: 16px; margin-bottom: 5px; box-shadow: 0 4px 6px rgba(245,158,11,0.3); border: 2px solid #fff; }
-    
-    /* Attendance Master Table */
-    .excel-table-container { overflow-x: auto; width: 100%; max-height: 700px; background-color: white; border-radius: 8px; border: 2px solid #cbd5e1; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-    .excel-table { width: 100%; border-collapse: collapse; font-size: 14px; white-space: nowrap; }
-    .excel-table th { background-color: #0f172a; color: white; padding: 12px; font-weight: bold; text-align: center; position: sticky; top: 0; z-index: 2; border: 1px solid #334155; }
-    .excel-table td { padding: 10px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; }
-    .row-even { background-color: #f8fafc; }
-    .row-odd { background-color: #ffffff; }
-    .excel-table tr:hover td { background-color: #e2e8f0 !important; cursor: default; }
-    
-    /* Sticky Columns for Scrolling Table */
-    .sticky-col-1 { position: sticky; left: 0; min-width: 100px; max-width: 100px; z-index: 3; border-right: 1px solid #cbd5e1; background-color: inherit; }
-    .sticky-col-2 { position: sticky; left: 100px; min-width: 60px; max-width: 60px; z-index: 3; border-right: 1px solid #cbd5e1; background-color: inherit; }
-    .sticky-col-3 { position: sticky; left: 160px; min-width: 220px; max-width: 220px; z-index: 3; border-right: 3px solid #005073; background-color: inherit; text-align: left !important; padding-left: 15px !important; }
-    th.sticky-col-1 { left: 0; min-width: 100px; z-index: 4 !important; background-color: #0f172a; border-right: 1px solid #334155; }
-    th.sticky-col-2 { left: 100px; min-width: 60px; z-index: 4 !important; background-color: #0f172a; border-right: 1px solid #334155; }
-    th.sticky-col-3 { left: 160px; min-width: 220px; z-index: 4 !important; background-color: #0f172a; border-right: 3px solid #f59e0b; }
-    
-    .status-p { background-color: #10b981 !important; color: white !important; font-size: 16px; font-weight: 900; }
-    .status-a { background-color: #ef4444 !important; color: white !important; font-size: 16px; font-weight: 900; }
-    
-    /* Vertical Action Buttons (One Finger Space) */
-    .stButton>button { width: 100%; font-weight: bold; border-radius: 8px; transition: all 0.2s; }
-    .stButton>button:active { transform: scale(0.95); }
-    .btn-vertical-p button { background: linear-gradient(145deg, #10b981, #059669) !important; color: white !important; height: 90px; font-size: 24px !important; margin-bottom: 10px; border: none; box-shadow: 0 5px 15px rgba(16,185,129,0.3); }
-    .btn-vertical-p button:hover { transform: translateY(-3px); }
-    .btn-vertical-a button { background: linear-gradient(145deg, #ef4444, #dc2626) !important; color: white !important; height: 90px; font-size: 24px !important; border: none; box-shadow: 0 5px 15px rgba(239,68,68,0.3); }
-    .btn-vertical-a button:hover { transform: translateY(-3px); }
-    </style>
-""", unsafe_allow_html=True)
 
 # --- 2. MASTER USER DATABASE ---
 MASTER_DB = 'master_users.db'
@@ -95,35 +19,72 @@ def init_master_db():
 
 init_master_db()
 
-# --- 3. LOGIN & REGISTRATION SPLIT SCREEN ---
+# --- 3. LOGIN & REGISTRATION SUPER PREMIUM UI ---
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.current_user = ""
 
 if not st.session_state.logged_in:
-    # Top spacing
-    st.markdown("<br><br>", unsafe_allow_html=True)
+    # Injecting CSS specifically for the Login Screen layout
+    st.markdown("""
+        <style>
+        /* Modern App Background */
+        .stApp { background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%); }
+        
+        /* Merging columns to create a single Split-Card */
+        [data-testid="stHorizontalBlock"] {
+            max-width: 1000px;
+            margin: 50px auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            gap: 0rem !important; /* Removes gap between left and right side */
+            background: white;
+            overflow: hidden;
+        }
+        
+        /* Left Column (Dark Branding Side) */
+        [data-testid="column"]:nth-of-type(1) {
+            background: linear-gradient(135deg, #0f172a, #005073);
+            padding: 60px 40px;
+            color: white;
+            border-right: 5px solid #f59e0b;
+        }
+        
+        /* Right Column (Colorful Form Side) */
+        [data-testid="column"]:nth-of-type(2) {
+            background: linear-gradient(135deg, #ffffff 0%, #fff1f2 50%, #fdf4ff 100%); /* Attractive soft colorful gradient */
+            padding: 50px 40px;
+        }
+        
+        /* Styling the Input labels and tabs */
+        div[data-baseweb="tab-list"] { background-color: transparent !important; }
+        .stTextInput p { color: #0f172a; font-weight: bold; }
+        
+        /* Action Buttons styling */
+        .stButton>button { width: 100%; font-weight: bold; border-radius: 8px; transition: all 0.2s; height: 50px; font-size: 16px;}
+        .stButton>button:active { transform: scale(0.95); }
+        </style>
+    """, unsafe_allow_html=True)
     
-    col1, col2 = st.columns([1.3, 1], gap="medium")
+    col1, col2 = st.columns([1.2, 1])
     
     with col1:
         st.markdown("""
-        <div class="info-box">
-            <div class="info-title">🎓 ISM PATNA</div>
-            <div class="info-sub">ATTENDANCE ERP SYSTEM</div>
-            <div class="info-text">
+        <div style="height: 100%;">
+            <h1 style="font-size: 42px; font-weight: 900; margin: 0; color: white;">🎓 ISM PATNA</h1>
+            <h3 style="color: #fcd34d; font-weight: 700; margin-top: 5px;">ATTENDANCE ERP SYSTEM</h3>
+            <p style="font-size: 15px; line-height: 1.6; color: #e2e8f0; margin-top: 25px;">
                 Welcome to the professional Multi-Tenant Attendance ERP Platform. This enterprise portal provides complete data isolation, analytical insights, automated reports, and secure image profile mapping for individual courses and classes.
-            </div>
-            <div class="feature-card">
-                <div class="feature-card-title">💡 Multi-Tenant Isolation Feature:</div>
-                <div class="feature-card-text">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</div>
+            </p>
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-top: 35px;">
+                <b style="color: #fcd34d; font-size: 16px;">💡 Multi-Tenant Isolation Feature:</b><br>
+                <span style="font-size: 14px; color: #f8fafc; display: inline-block; margin-top: 5px;">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
     with col2:
-        st.markdown('<div class="form-box">', unsafe_allow_html=True)
-        st.markdown('<div class="form-title">🔐 Access Portal</div>', unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align:center; color: #db2777; font-weight: 900; margin-bottom: 20px;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
         
         tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 REGISTER NEW CLASS"])
         
@@ -159,18 +120,56 @@ if not st.session_state.logged_in:
                 else:
                     st.error("Both fields are required.")
                     
-        st.markdown("</div>", unsafe_allow_html=True)
-        
     st.stop()
 
 # =========================================================================
-# TENANT SPACE ISOLATION CONFIGURATION
+# TENANT SPACE ISOLATION CONFIGURATION (AFTER LOGIN)
 # =========================================================================
 USER_ID = st.session_state.current_user
 DB_NAME = f"database_{USER_ID}.db"
 PHOTO_DIR = f"photos_{USER_ID}"
 LOGO_FILE = f"logo_{USER_ID}.png"
 os.makedirs(PHOTO_DIR, exist_ok=True)
+
+# Main App CSS (Applies only after login)
+st.markdown("""
+    <style>
+    .stApp { background: #f0f4f8; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; } 
+    div[data-testid="stSidebar"] { background-color: #1e293b; color: white !important; border-right: 2px solid #005073; }
+    div[data-testid="stSidebar"] * { color: white !important; }
+    .panel-box { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #005073; margin-bottom: 20px; transition: transform 0.3s; }
+    .panel-box:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    
+    .profile-card-left { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); text-align: center; border: 1px solid #e2e8f0; height: 100%; }
+    .profile-pic-left { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; border: 5px solid #f8fafc; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: 0 auto; display: block; }
+    .id-badge { background: linear-gradient(135deg, #f59e0b, #fbbf24); color: #000 !important; padding: 6px 20px; border-radius: 25px; display: inline-block; font-weight: 900; font-size: 16px; margin-bottom: 5px; box-shadow: 0 4px 6px rgba(245,158,11,0.3); border: 2px solid #fff; }
+    
+    .excel-table-container { overflow-x: auto; width: 100%; max-height: 700px; background-color: white; border-radius: 8px; border: 2px solid #cbd5e1; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .excel-table { width: 100%; border-collapse: collapse; font-size: 14px; white-space: nowrap; }
+    .excel-table th { background-color: #0f172a; color: white; padding: 12px; font-weight: bold; text-align: center; position: sticky; top: 0; z-index: 2; border: 1px solid #334155; }
+    .excel-table td { padding: 10px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; }
+    .row-even { background-color: #f8fafc; }
+    .row-odd { background-color: #ffffff; }
+    .excel-table tr:hover td { background-color: #e2e8f0 !important; cursor: default; }
+    
+    .sticky-col-1 { position: sticky; left: 0; min-width: 100px; max-width: 100px; z-index: 3; border-right: 1px solid #cbd5e1; background-color: inherit; }
+    .sticky-col-2 { position: sticky; left: 100px; min-width: 60px; max-width: 60px; z-index: 3; border-right: 1px solid #cbd5e1; background-color: inherit; }
+    .sticky-col-3 { position: sticky; left: 160px; min-width: 220px; max-width: 220px; z-index: 3; border-right: 3px solid #005073; background-color: inherit; text-align: left !important; padding-left: 15px !important; }
+    th.sticky-col-1 { left: 0; min-width: 100px; z-index: 4 !important; background-color: #0f172a; border-right: 1px solid #334155; }
+    th.sticky-col-2 { left: 100px; min-width: 60px; z-index: 4 !important; background-color: #0f172a; border-right: 1px solid #334155; }
+    th.sticky-col-3 { left: 160px; min-width: 220px; z-index: 4 !important; background-color: #0f172a; border-right: 3px solid #f59e0b; }
+    
+    .status-p { background-color: #10b981 !important; color: white !important; font-size: 16px; font-weight: 900; }
+    .status-a { background-color: #ef4444 !important; color: white !important; font-size: 16px; font-weight: 900; }
+    
+    .stButton>button { width: 100%; font-weight: bold; border-radius: 8px; transition: all 0.2s; }
+    .stButton>button:active { transform: scale(0.95); }
+    .btn-vertical-p button { background: linear-gradient(145deg, #10b981, #059669) !important; color: white !important; height: 90px; font-size: 24px !important; margin-bottom: 10px; border: none; box-shadow: 0 5px 15px rgba(16,185,129,0.3); }
+    .btn-vertical-p button:hover { transform: translateY(-3px); }
+    .btn-vertical-a button { background: linear-gradient(145deg, #ef4444, #dc2626) !important; color: white !important; height: 90px; font-size: 24px !important; border: none; box-shadow: 0 5px 15px rgba(239,68,68,0.3); }
+    .btn-vertical-a button:hover { transform: translateY(-3px); }
+    </style>
+""", unsafe_allow_html=True)
 
 def init_user_db():
     conn = sqlite3.connect(DB_NAME)
