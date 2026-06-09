@@ -25,66 +25,84 @@ if 'logged_in' not in st.session_state:
     st.session_state.current_user = ""
 
 if not st.session_state.logged_in:
-    # Injecting CSS specifically for the Login Screen layout
+    # VERY STRICT CSS ONLY FOR LOGIN SCREEN
     st.markdown("""
         <style>
         /* Modern App Background */
-        .stApp { background: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%); }
+        .stApp { background: #e2e8f0; }
         
-        /* Merging columns to create a single Split-Card */
+        /* Hide Top Menu for cleaner login */
+        #MainMenu {visibility: hidden;}
+        header {visibility: hidden;}
+        footer {visibility: hidden;}
+        
+        /* Force the Horizontal Block to become a Large Premium Card */
         [data-testid="stHorizontalBlock"] {
-            max-width: 1000px;
-            margin: 50px auto;
+            background-color: white;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            gap: 0rem !important; /* Removes gap between left and right side */
-            background: white;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-width: 1100px; /* Thoda Bada Size */
+            margin: 60px auto !important;
             overflow: hidden;
+            border: 1px solid #cbd5e1;
         }
         
-        /* Left Column (Dark Branding Side) */
+        /* Remove gap between left and right */
+        [data-testid="stHorizontalBlock"] > div {
+            gap: 0 !important;
+        }
+        
+        /* LEFT SIDE - STRICT DARK BLUE STYLING */
         [data-testid="column"]:nth-of-type(1) {
-            background: linear-gradient(135deg, #0f172a, #005073);
-            padding: 60px 40px;
-            color: white;
+            background: linear-gradient(135deg, #0f172a, #005073) !important;
+            padding: 60px 50px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             border-right: 5px solid #f59e0b;
         }
         
-        /* Right Column (Colorful Form Side) */
+        /* RIGHT SIDE - CLEAN WHITE FORM */
         [data-testid="column"]:nth-of-type(2) {
-            background: linear-gradient(135deg, #ffffff 0%, #fff1f2 50%, #fdf4ff 100%); /* Attractive soft colorful gradient */
-            padding: 50px 40px;
+            background: #ffffff !important;
+            padding: 60px 50px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
-        /* Styling the Input labels and tabs */
-        div[data-baseweb="tab-list"] { background-color: transparent !important; }
-        .stTextInput p { color: #0f172a; font-weight: bold; }
+        /* Input and Button Styling */
+        .stTextInput>div>div>input { background-color: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; font-size: 16px;}
+        .stButton>button { border-radius: 8px; height: 55px; font-size: 18px; font-weight: bold; width: 100%; transition: all 0.3s; background: #ef4444; color: white;}
+        .stButton>button:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3); }
         
-        /* Action Buttons styling */
-        .stButton>button { width: 100%; font-weight: bold; border-radius: 8px; transition: all 0.2s; height: 50px; font-size: 16px;}
-        .stButton>button:active { transform: scale(0.95); }
+        /* Tabs Styling */
+        .stTabs [data-baseweb="tab-list"] { background-color: transparent !important; justify-content: center; margin-bottom: 20px;}
+        .stTabs [data-baseweb="tab"] { font-size: 16px; font-weight: bold; }
         </style>
     """, unsafe_allow_html=True)
     
+    # Split Layout
     col1, col2 = st.columns([1.2, 1])
     
     with col1:
+        # PURE HTML FOR LEFT SIDE TO PREVENT STREAMLIT OVERRIDES
         st.markdown("""
-        <div style="height: 100%;">
-            <h1 style="font-size: 42px; font-weight: 900; margin: 0; color: white;">🎓 ISM PATNA</h1>
-            <h3 style="color: #fcd34d; font-weight: 700; margin-top: 5px;">ATTENDANCE ERP SYSTEM</h3>
-            <p style="font-size: 15px; line-height: 1.6; color: #e2e8f0; margin-top: 25px;">
+        <div style="color: white; height: 100%;">
+            <h1 style="font-size: 45px; font-weight: 900; margin: 0; color: white; letter-spacing: 1px;">🎓 ISM PATNA</h1>
+            <h3 style="color: #fcd34d; font-weight: 700; margin-top: 10px; font-size: 20px; letter-spacing: 1.5px;">ATTENDANCE ERP SYSTEM</h3>
+            <p style="font-size: 16px; line-height: 1.7; color: #cbd5e1; margin-top: 35px;">
                 Welcome to the professional Multi-Tenant Attendance ERP Platform. This enterprise portal provides complete data isolation, analytical insights, automated reports, and secure image profile mapping for individual courses and classes.
             </p>
-            <div style="background: rgba(255, 255, 255, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-top: 35px;">
-                <b style="color: #fcd34d; font-size: 16px;">💡 Multi-Tenant Isolation Feature:</b><br>
-                <span style="font-size: 14px; color: #f8fafc; display: inline-block; margin-top: 5px;">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</span>
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 25px; border-radius: 12px; border-left: 5px solid #f59e0b; margin-top: 45px; box-shadow: 0 10px 15px rgba(0,0,0,0.1);">
+                <b style="color: #fcd34d; font-size: 18px;">💡 Multi-Tenant Isolation Feature:</b><br>
+                <span style="font-size: 15px; color: #f8fafc; display: inline-block; margin-top: 8px; line-height: 1.5;">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
     with col2:
-        st.markdown("<h2 style='text-align:center; color: #db2777; font-weight: 900; margin-bottom: 20px;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align:center; color: #0f172a; font-weight: 900; margin-bottom: 20px;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
         
         tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 REGISTER NEW CLASS"])
         
