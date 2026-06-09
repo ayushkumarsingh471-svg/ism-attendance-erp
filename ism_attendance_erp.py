@@ -7,7 +7,7 @@ import io
 import os
 import base64
 
-# --- 1. PAGE SETUP ---
+# --- 1. PAGE SETUP & GLOBAL CSS ---
 st.set_page_config(layout="wide", page_title="ISM Attendance ERP", page_icon="🎓")
 
 # --- 2. MASTER USER DATABASE ---
@@ -19,51 +19,64 @@ def init_master_db():
 
 init_master_db()
 
-# =========================================================================
-# 3. LOGIN & REGISTRATION SCREEN (100% SAFE UI)
-# =========================================================================
+# --- 3. LOGIN & REGISTRATION SUPER PREMIUM UI ---
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
     st.session_state.current_user = ""
 
 if not st.session_state.logged_in:
-    # SAFE CSS SCOPED ONLY FOR LOGIN
+    # STRICT CSS TO FORCE PERFECT LAYOUT FOR LOGIN SCREEN
     st.markdown("""
         <style>
-        .stApp { background-color: #f1f5f9; }
-        header { visibility: hidden; }
-        .block-container { padding-top: 3rem !important; max-width: 1000px !important; }
+        .stApp { background: #e2e8f0; }
+        header {visibility: hidden;}
+        #MainMenu {visibility: hidden;}
+        .block-container {padding-top: 2rem !important; max-width: 1000px !important;}
         
-        /* Styling the Login Card Container */
         [data-testid="stHorizontalBlock"] {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-            border: 1px solid #e2e8f0;
+            background-color: transparent !important;
+            border-radius: 20px !important;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2) !important;
+            margin-top: 30px !important;
+            display: flex;
+            align-items: stretch;
         }
+        [data-testid="stHorizontalBlock"] > div { gap: 0 !important; }
         
-        /* Left Panel (Dark Blue) */
-        [data-testid="stHorizontalBlock"] > div:nth-child(1) {
-            background: linear-gradient(135deg, #0f172a, #005073);
-            padding: 60px 40px;
-            color: white;
+        /* LEFT SIDE */
+        [data-testid="column"]:nth-child(1) {
+            background: linear-gradient(135deg, #0f172a, #005073) !important;
+            padding: 50px 40px !important;
+            border-radius: 20px 0 0 20px !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
             border-right: 4px solid #f59e0b;
         }
         
-        /* Right Panel (White) */
-        [data-testid="stHorizontalBlock"] > div:nth-child(2) {
-            padding: 50px 40px;
-            background: white;
+        /* RIGHT SIDE */
+        [data-testid="column"]:nth-child(2) {
+            background: #ffffff !important;
+            padding: 50px 40px !important;
+            border-radius: 0 20px 20px 0 !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
-        /* Input & Button Styling */
-        .stTextInput input { border-radius: 8px; border: 1px solid #cbd5e1; padding: 12px; background: #f8fafc;}
-        .stTextInput input:focus { border-color: #0ea5e9; }
-        .stButton>button { width: 100%; border-radius: 8px; font-weight: bold; background: #ef4444; color: white; border: none; height: 45px; transition: 0.3s;}
-        .stButton>button:hover { background: #dc2626; color: white; transform: translateY(-2px); }
-        .stTabs [data-baseweb="tab-list"] { justify-content: center; background: transparent; border-bottom: 2px solid #e2e8f0;}
-        .stTabs [aria-selected="true"] { color: #ef4444 !important; border-bottom-color: #ef4444 !important;}
+        .stMarkdown:empty { display: none !important; }
+        [data-testid="column"]:nth-child(2) > div > div > div:first-child:empty { display: none !important; }
+        
+        .stTextInput input { border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 12px; background: #f8fafc;}
+        .stTextInput input:focus { border-color: #ef4444; }
+        .stTextInput p { font-weight: bold; color: #334155; }
+        
+        .stButton>button { width: 100%; background: linear-gradient(135deg, #f43f5e 0%, #fb923c 100%) !important; color: white !important; font-weight: 900 !important; font-size: 18px !important; border-radius: 10px !important; height: 50px !important; border: none !important; box-shadow: 0 8px 15px rgba(244, 63, 94, 0.25) !important; transition: all 0.3s ease !important; margin-top: 10px;}
+        .stButton>button:hover { transform: translateY(-2px); box-shadow: 0 12px 20px rgba(244, 63, 94, 0.4) !important; }
+        
+        .stTabs [data-baseweb="tab-list"] { justify-content: center; background: transparent; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px;}
+        .stTabs [data-baseweb="tab"] { font-weight: bold; font-size: 15px; color: #64748b;}
+        .stTabs [aria-selected="true"] { color: #f43f5e !important; border-bottom-color: #f43f5e !important;}
         </style>
     """, unsafe_allow_html=True)
     
@@ -71,28 +84,31 @@ if not st.session_state.logged_in:
     
     with col1:
         st.markdown("""
-        <div style="display:flex; flex-direction:column; justify-content:center; height:100%;">
-            <h1 style="font-size: 38px; font-weight: 900; margin: 0; color: white;">🎓 ISM PATNA</h1>
-            <h3 style="color: #fcd34d; font-weight: 700; margin-top: 5px; font-size: 16px;">ATTENDANCE ERP SYSTEM</h3>
-            <p style="font-size: 14px; line-height: 1.6; color: #cbd5e1; margin-top: 20px;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 5px;">
+                <span style="font-size: 45px;">🎓</span>
+                <h1 style="font-size: 42px; font-weight: 900; margin: 0; color: #ffffff; letter-spacing: 1px;">ISM PATNA</h1>
+            </div>
+            <h3 style="color: #fcd34d; font-weight: 800; margin-top: 0px; font-size: 18px; letter-spacing: 1px;">ATTENDANCE ERP SYSTEM</h3>
+            <p style="font-size: 15px; line-height: 1.8; color: #cbd5e1; margin-top: 25px;">
                 Welcome to the professional Multi-Tenant Attendance ERP Platform. This enterprise portal provides complete data isolation, analytical insights, automated reports, and secure image profile mapping for individual courses and classes.
             </p>
-            <div style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px; border-left: 3px solid #f59e0b; margin-top: 25px;">
-                <b style="color: #fcd34d; font-size: 14px;">💡 Multi-Tenant Isolation Feature:</b><br>
-                <span style="font-size: 13px; color: #f8fafc;">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</span>
+            <div style="background: rgba(255, 255, 255, 0.05); padding: 20px; border-radius: 12px; border-left: 4px solid #f59e0b; margin-top: 30px;">
+                <b style="color: #fcd34d; font-size: 16px;">💡 Multi-Tenant Isolation Feature:</b><br>
+                <span style="font-size: 14px; color: #f8fafc; display: inline-block; margin-top: 8px; line-height: 1.6;">Every class, course coordinator, or administrator can register a custom User ID to instantiate a clean, completely independent localized database.</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
         
     with col2:
-        st.markdown("<h2 style='text-align:center; color:#0f172a; font-weight:900; margin-top:0;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
+        st.markdown("<h2 style='text-align:center; background: -webkit-linear-gradient(45deg, #f43f5e, #fb923c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 900; margin-top: 0; margin-bottom: 5px;'>🔐 Access Portal</h2>", unsafe_allow_html=True)
         
-        tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 REGISTER"])
+        tab1, tab2 = st.tabs(["🔐 LOGIN", "📝 REGISTER NEW CLASS"])
         
         with tab1:
-            l_user = st.text_input("User ID", placeholder="Enter User ID", key="l_id")
-            l_pass = st.text_input("Password", type="password", placeholder="Enter Password", key="l_pass")
-            if st.button("SECURE LOGIN"):
+            l_user = st.text_input("User ID", placeholder="Enter User ID", key="login_uid_field")
+            l_pass = st.text_input("Password", type="password", placeholder="Enter Password", key="login_pwd_field")
+            if st.button("SECURE LOGIN", type="primary"):
                 conn = sqlite3.connect(MASTER_DB)
                 res = conn.execute("SELECT * FROM users WHERE username=? AND password=?", (l_user.strip(), l_pass)).fetchone()
                 conn.close()
@@ -104,24 +120,25 @@ if not st.session_state.logged_in:
                     st.error("❌ Invalid User ID or Password!")
                     
         with tab2:
-            n_user = st.text_input("User ID", placeholder="Choose User ID (e.g., BCA_Sem1)", key="r_id")
-            n_pass = st.text_input("Password", type="password", placeholder="Create Password", key="r_pass")
-            if st.button("REGISTER ACCOUNT"):
+            n_user = st.text_input("User ID", placeholder="Choose User ID (e.g., BCA_Sem1)")
+            n_pass = st.text_input("Password", type="password", placeholder="Create Password")
+            if st.button("REGISTER ACCOUNT", type="primary"):
                 if n_user and n_pass:
                     conn = sqlite3.connect(MASTER_DB)
                     try:
                         conn.execute("INSERT INTO users (username, password) VALUES (?, ?)", (n_user.strip(), n_pass))
                         conn.commit()
-                        st.success(f"✅ Registered '{n_user}'! Please login.")
+                        st.success(f"✅ Registered '{n_user}' successfully! Switch to Login tab.")
                     except sqlite3.IntegrityError:
-                        st.error("⚠️ User ID already exists.")
+                        st.error("⚠️ This User ID already exists. Try another name.")
                     conn.close()
                 else:
                     st.error("Both fields are required.")
+                    
     st.stop()
 
 # =========================================================================
-# 4. APP DASHBOARD (AFTER LOGIN)
+# TENANT SPACE ISOLATION CONFIGURATION (AFTER LOGIN)
 # =========================================================================
 USER_ID = st.session_state.current_user
 DB_NAME = f"database_{USER_ID}.db"
@@ -129,47 +146,63 @@ PHOTO_DIR = f"photos_{USER_ID}"
 LOGO_FILE = f"logo_{USER_ID}.png"
 os.makedirs(PHOTO_DIR, exist_ok=True)
 
-# SAFE GLOBAL CSS FOR APP FUNCTIONS
+# FULL PAGE CSS - PREMIUM ACTIVE LOOK AFTER LOGIN
 st.markdown("""
     <style>
-    /* Premium Light Gradient Background */
-    .stApp { background: linear-gradient(135deg, #eef2f6 0%, #e0e7ff 100%); font-family: 'Segoe UI', sans-serif; }
+    /* Gorgeous Light Background for Full Page */
+    .stApp { background: linear-gradient(135deg, #eef2f6 0%, #dbeafe 100%); font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; } 
     
-    /* Make Streamlit forms look like Premium Cards */
-    [data-testid="stForm"] {
-        background: white;
-        padding: 25px;
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.05);
-        border: 1px solid #e2e8f0;
-    }
+    div[data-testid="stSidebar"] { background-color: #1e293b; color: white !important; border-right: 2px solid #005073; }
+    div[data-testid="stSidebar"] * { color: white !important; }
     
-    /* Global Button Styling for native functionality */
-    [data-testid="stButton"] button {
-        border-radius: 8px;
-        font-weight: bold;
+    .panel-box { background: white; border-radius: 15px; padding: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); border-top: 4px solid #005073; margin-bottom: 20px; transition: transform 0.3s; }
+    .panel-box:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,0,0,0.1); }
+    
+    /* Make all generic buttons look premium and chunky */
+    div[data-testid="stButton"] button {
+        border-radius: 12px;
+        padding: 10px 20px;
+        font-weight: 800;
+        font-size: 16px;
+        border: 2px solid #cbd5e1;
         transition: all 0.3s ease;
+        background: white;
+        color: #0f172a;
     }
-    [data-testid="stButton"] button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    div[data-testid="stButton"] button:hover {
+        border-color: #005073;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        color: #005073;
     }
     
-    /* Custom CSS for Dashboard Metric Boxes */
-    .metric-box {
-        background: white; border-radius: 12px; padding: 20px; text-align: center;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid #005073; margin-bottom: 20px;
+    /* Specific coloring for primary buttons (like logout) */
+    div[data-testid="stButton"] button[kind="primary"] {
+        background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+        color: white !important;
+        border: none;
     }
-    .metric-box h4 { margin: 0; color: #64748b; font-size: 16px; }
-    .metric-box h2 { margin: 10px 0 0 0; color: #0f172a; font-size: 32px; font-weight: 900;}
+    div[data-testid="stButton"] button[kind="primary"]:hover {
+        background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
+        box-shadow: 0 8px 15px rgba(239, 68, 68, 0.3);
+    }
     
-    /* Excel Table Styling */
+    /* Attendance Master Table */
     .excel-table-container { overflow-x: auto; width: 100%; max-height: 700px; background-color: white; border-radius: 8px; border: 2px solid #cbd5e1; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
     .excel-table { width: 100%; border-collapse: collapse; font-size: 14px; white-space: nowrap; }
     .excel-table th { background-color: #0f172a; color: white; padding: 12px; font-weight: bold; text-align: center; position: sticky; top: 0; z-index: 2; border: 1px solid #334155; }
     .excel-table td { padding: 10px; border: 1px solid #e2e8f0; text-align: center; font-weight: bold; }
     .row-even { background-color: #f8fafc; }
     .row-odd { background-color: #ffffff; }
+    .excel-table tr:hover td { background-color: #e2e8f0 !important; cursor: default; }
+    
+    .sticky-col-1 { position: sticky; left: 0; min-width: 100px; max-width: 100px; z-index: 3; border-right: 1px solid #cbd5e1; background-color: inherit; }
+    .sticky-col-2 { position: sticky; left: 100px; min-width: 60px; max-width: 60px; z-index: 3; border-right: 1px solid #cbd5e1; background-color: inherit; }
+    .sticky-col-3 { position: sticky; left: 160px; min-width: 220px; max-width: 220px; z-index: 3; border-right: 3px solid #005073; background-color: inherit; text-align: left !important; padding-left: 15px !important; }
+    th.sticky-col-1 { left: 0; min-width: 100px; z-index: 4 !important; background-color: #0f172a; border-right: 1px solid #334155; }
+    th.sticky-col-2 { left: 100px; min-width: 60px; z-index: 4 !important; background-color: #0f172a; border-right: 1px solid #334155; }
+    th.sticky-col-3 { left: 160px; min-width: 220px; z-index: 4 !important; background-color: #0f172a; border-right: 3px solid #f59e0b; }
+    
     .status-p { background-color: #10b981 !important; color: white !important; font-size: 16px; font-weight: 900; }
     .status-a { background-color: #ef4444 !important; color: white !important; font-size: 16px; font-weight: 900; }
     </style>
@@ -303,10 +336,39 @@ if menu == "📊 Dashboard":
     c4.markdown(f'<div class="metric-box" style="border-top-color:#f59e0b;"><h4>Present on {target_date.strftime("%d %b")}</h4><h2>{present_today}</h2></div>', unsafe_allow_html=True)
 
 # =========================================================================
-# TAB 2: MARK ATTENDANCE
+# TAB 2: MARK ATTENDANCE (PROFESSIONAL ID CARD & GREEN/RED BUTTONS)
 # =========================================================================
 elif menu == "📝 Mark Attendance":
     st.markdown("### 📝 Active Mark Attendance Panel")
+    
+    # CSS HACK ONLY FOR THIS TAB TO MAKE BUTTONS GREEN AND RED
+    st.markdown("""
+    <style>
+    /* MAKE 1ST BUTTON GREEN (PRESENT) */
+    [data-testid="column"]:nth-of-type(3) div[data-testid="element-container"]:nth-of-type(2) button {
+        background: linear-gradient(135deg, #10b981, #059669) !important;
+        color: white !important;
+        border: none !important;
+        box-shadow: 0 8px 15px rgba(16,185,129,0.3) !important;
+    }
+    [data-testid="column"]:nth-of-type(3) div[data-testid="element-container"]:nth-of-type(2) button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 20px rgba(16,185,129,0.5) !important;
+    }
+    
+    /* MAKE 2ND BUTTON RED (ABSENT) */
+    [data-testid="column"]:nth-of-type(3) div[data-testid="element-container"]:nth-of-type(4) button {
+        background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+        color: white !important;
+        border: none !important;
+        box-shadow: 0 8px 15px rgba(239,68,68,0.3) !important;
+    }
+    [data-testid="column"]:nth-of-type(3) div[data-testid="element-container"]:nth-of-type(4) button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 20px rgba(239,68,68,0.5) !important;
+    }
+    </style>
+    """, unsafe_allow_html=True)
     
     col_a, col_b, col_c, col_d = st.columns(4)
     now = datetime.now()
@@ -326,17 +388,35 @@ elif menu == "📝 Mark Attendance":
         s_id, s_reg, s_roll, s_name = curr_student
         photo_url = get_student_photo_url(s_reg)
         
-        st.write("<hr>", unsafe_allow_html=True)
+        st.write("<hr style='margin: 10px 0;'>", unsafe_allow_html=True)
         col_prof, col_space, col_btn = st.columns([2.5, 0.2, 1.5])
         
         with col_prof:
-            # GORGEOUS GLASSY CARD UI
+            # PROFESSIONAL STUDENT ID CARD UI
             profile_html = f"""
-            <div style='background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 2px solid white; text-align: center;'>
-                <img src='{photo_url}' style='width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 5px solid white; box-shadow: 0 8px 20px rgba(0,0,0,0.1); margin: 0 auto; display: block;'>
-                <h1 style='color:#0f172a; font-size:30px; font-weight: 900; margin: 15px 0 5px 0;'>{s_name}</h1>
-                <div style='background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; padding: 6px 20px; border-radius: 20px; display: inline-block; font-weight: bold; font-size: 16px; margin-bottom: 5px; box-shadow: 0 4px 10px rgba(59,130,246,0.3);'>🆔 ID: {s_reg}</div>
-                <h4 style='color:#64748b; font-size: 16px; font-weight: 700; margin: 5px 0 0 0;'>ROLL NO: {s_roll}</h4>
+            <div style='background: #ffffff; border-radius: 15px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid #cbd5e1; text-align: center; max-width: 380px; margin: 0 auto; position: relative;'>
+                
+                <div style='background: linear-gradient(135deg, #0f172a, #005073); padding: 20px; color: #fcd34d; font-weight: 900; font-size: 18px; letter-spacing: 2px;'>
+                    <div style='width: 50px; height: 6px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 0 auto 15px auto;'></div>
+                    STUDENT ID CARD
+                </div>
+                
+                <div style='margin-top: -45px;'>
+                    <img src='{photo_url}' style='width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 5px solid #ffffff; box-shadow: 0 5px 15px rgba(0,0,0,0.2); background: white;'>
+                </div>
+                
+                <div style='padding: 15px 20px;'>
+                    <h1 style='color: #0f172a; font-size: 24px; font-weight: 900; margin: 5px 0; text-transform: uppercase;'>{s_name}</h1>
+                    <div style='background: #f1f5f9; color: #ef4444; padding: 6px 15px; border-radius: 6px; display: inline-block; font-weight: 900; font-size: 15px; margin: 10px 0; border: 1px solid #e2e8f0;'>
+                        REG NO: {s_reg}
+                    </div>
+                    <h4 style='color: #64748b; font-size: 15px; font-weight: 700; margin: 5px 0 10px 0;'>ROLL NO: {s_roll}</h4>
+                </div>
+                
+                <div style='background: #f8fafc; padding: 12px; color: #475569; font-weight: 700; font-size: 12px; border-top: 1px solid #e2e8f0;'>
+                    {c_name}
+                </div>
+                
             </div>
             """
             st.markdown(profile_html, unsafe_allow_html=True)
@@ -357,8 +437,8 @@ elif menu == "📝 Mark Attendance":
         with col_btn:
             st.write("<br><br>", unsafe_allow_html=True)
             
-            # Big Native Streamlit Buttons
-            if st.button("✅ MARK PRESENT", type="primary", use_container_width=True):
+            # This is element 2 (Will be GREEN from CSS)
+            if st.button("✅ MARK PRESENT", use_container_width=True):
                 cursor.execute("INSERT OR REPLACE INTO attendance (student_id, subject_id, date, status) VALUES (?, (SELECT id FROM subjects WHERE subject_name=?), ?, 'Present')", (s_id, sel_sub, str(target_date)))
                 conn.commit()
                 st.toast(f"{s_name} Marked PRESENT", icon="🟢")
@@ -367,6 +447,7 @@ elif menu == "📝 Mark Attendance":
                 
             st.write("<br>", unsafe_allow_html=True)
             
+            # This is element 4 (Will be RED from CSS)
             if st.button("❌ MARK ABSENT", use_container_width=True):
                 cursor.execute("INSERT OR REPLACE INTO attendance (student_id, subject_id, date, status) VALUES (?, (SELECT id FROM subjects WHERE subject_name=?), ?, 'Absent')", (s_id, sel_sub, str(target_date)))
                 conn.commit()
