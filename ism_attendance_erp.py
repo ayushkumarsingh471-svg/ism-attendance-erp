@@ -105,7 +105,7 @@ PHOTO_DIR = f"photos_{USER_ID}"
 LOGO_FILE = f"logo_{USER_ID}.png"
 os.makedirs(PHOTO_DIR, exist_ok=True)
 
-# FULL APP CSS (DARK TEXT FIX FOR TABLE)
+# FULL APP CSS (STICKY COLUMNS FIX ADDED BACK!)
 st.markdown("""
     <style>
     .block-container { padding-top: 2rem !important; max-width: 95% !important; }
@@ -113,15 +113,16 @@ st.markdown("""
     .excel-table-container { overflow-x: auto; max-height: 650px; border: 1px solid #cbd5e1; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
     .excel-table { width: 100%; border-collapse: collapse; background: white; font-size: 14px; white-space: nowrap; }
     .excel-table th { background: #0f172a; color: white; padding: 12px; position: sticky; top: 0; z-index: 2; text-align: center; }
-    
-    /* 🔥 TEXT COLOR FIX: Force Dark Text on Table Cells 🔥 */
     .excel-table td { padding: 10px; border: 1px solid #e2e8f0; text-align: center; color: #0f172a !important; font-weight: 700; }
     
-    .excel-table th:nth-child(3), .excel-table td:nth-child(3) { 
-        min-width: 300px !important; 
-        text-align: left !important; 
-        padding-left: 15px !important;
-    }
+    /* 🔥 EXACT FIX FOR STICKY COLUMNS 🔥 */
+    .sticky-col-1 { position: sticky; left: 0; width: 120px; min-width: 120px; z-index: 3; background-color: inherit; }
+    .sticky-col-2 { position: sticky; left: 120px; width: 80px; min-width: 80px; z-index: 3; background-color: inherit; }
+    .sticky-col-3 { position: sticky; left: 200px; width: 280px; min-width: 280px; z-index: 3; background-color: inherit; border-right: 3px solid #cbd5e1; }
+    
+    .excel-table th.sticky-col-1 { left: 0; z-index: 4; background-color: #0f172a; border-right: 1px solid #334155;}
+    .excel-table th.sticky-col-2 { left: 120px; z-index: 4; background-color: #0f172a; border-right: 1px solid #334155;}
+    .excel-table th.sticky-col-3 { left: 200px; z-index: 4; background-color: #0f172a; border-right: 3px solid #f59e0b;}
     
     .row-even { background-color: #f8fafc; }
     .row-odd { background-color: #ffffff; }
@@ -336,7 +337,7 @@ elif menu == "📝 Mark Attendance":
     conn.close()
 
 # =========================================================================
-# TAB 3: ATTENDANCE TABLE (DARK TEXT FIX ADDED)
+# TAB 3: ATTENDANCE TABLE (STICKY COLUMNS FIX ADDED)
 # =========================================================================
 elif menu == "📅 Attendance Table":
     st.markdown("### 📅 Monthly Register")
@@ -372,7 +373,7 @@ elif menu == "📅 Attendance Table":
         tc_count = cursor.execute("SELECT COUNT(DISTINCT date) FROM attendance WHERE subject_id=(SELECT id FROM subjects WHERE subject_name=?) AND date LIKE ?", (sel_sub, date_pattern)).fetchone()[0] or 0
             
         html_grid = '<div class="excel-table-container"><table class="excel-table">'
-        html_grid += '<tr><th>Reg No</th><th>Roll</th><th>Student Name</th>'
+        html_grid += '<tr><th class="sticky-col-1">Reg No</th><th class="sticky-col-2">Roll</th><th class="sticky-col-3" style="text-align:left;">Student Name</th>'
         for d in range(1, num_days + 1): html_grid += f'<th>{d}</th>'
         html_grid += '<th>%</th></tr>'
         
@@ -382,10 +383,10 @@ elif menu == "📅 Attendance Table":
             row_counter += 1
             html_grid += f'<tr class="{row_class}">'
             
-            # 🔥 INLINE STYLE ADDED FOR 100% VISIBILITY IN DARK MODE 🔥
-            html_grid += f'<td style="color: #0f172a !important;">{row["reg_no"]}</td>'
-            html_grid += f'<td style="color: #0f172a !important;">{row["roll_no"]}</td>'
-            html_grid += f'<td style="color: #0f172a !important; text-align: left !important;">{row["name"]}</td>'
+            # STICKY CLASSES ADDED BACK HERE
+            html_grid += f'<td class="sticky-col-1">{row["reg_no"]}</td>'
+            html_grid += f'<td class="sticky-col-2">{row["roll_no"]}</td>'
+            html_grid += f'<td class="sticky-col-3" style="text-align: left !important;">{row["name"]}</td>'
             
             total_p = 0
             s_reg_str = row['reg_no']
